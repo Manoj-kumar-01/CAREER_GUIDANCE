@@ -29,7 +29,7 @@ mongoose.connect(process.env.mongo_url)
     });
 
 const store = new MongoStore({
-    uri: client,
+    uri: process.env.mongo_url,
     collection: 'Sessions'
 });
 
