@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emerging Fields in CSE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Dark Theme Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #121212; /* Dark background */
+            color: #e0e0e0; /* Light text */
+            padding: 40px; /* Increased padding */
+            margin: 0;
+        }
+        .container {
+            max-width: 1000px; /* Wider container */
+            margin: 0 auto;
+            background: #1e1e1e; /* Dark container */
+            padding: 40px; /* Increased padding */
+            border-radius: 15px; /* Rounded corners */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Stronger shadow */
+        }
+        h1 {
+            color: #bb86fc; /* Purple accent */
+            font-size: 2.5rem; /* Larger font size */
+            margin-bottom: 20px; /* Increased margin */
+            text-align: center;
+        }
+        .description {
+            font-size: 1.2rem; /* Larger font size */
+            color: #e0e0e0;
+            text-align: center;
+            margin-bottom: 40px; /* Increased margin */
+        }
+        .search-bar {
+            width: 100%;
+            padding: 15px; /* Increased padding */
+            background: #2c2c2c; /* Darker background for search bar */
+            border: none;
+            border-radius: 10px; /* Rounded corners */
+            color: #e0e0e0;
+            font-size: 1rem; /* Larger font size */
+            margin-bottom: 30px; /* Increased margin */
+        }
+        .job-roles {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive grid */
+            gap: 20px; /* Space between cards */
+        }
+        .job-role {
+            background: #2c2c2c; /* Darker background for cards */
+            padding: 30px; /* Increased padding */
+            border-radius: 15px; /* Rounded corners */
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+        }
+        .job-role:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); /* Stronger shadow */
+        }
+        .job-role i {
+            font-size: 2.5rem; /* Larger icon size */
+            color: #bb86fc; /* Purple accent */
+            margin-bottom: 20px; /* Increased margin */
+        }
+        .job-role h2 {
+            font-size: 1.5rem; /* Larger font size */
+            color: #ffffff; /* White text */
+            margin-bottom: 10px; /* Increased margin */
+        }
+        .job-role p {
+            font-size: 1rem; /* Larger font size */
+            color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Emerging Fields in Computer Science</h1>
+        <p class="description">
+            Explore the most exciting and rapidly growing fields in Computer Science and Engineering. 
+            These fields are shaping the future of technology and innovation. Select a job role to learn more.
+        </p>
+
+        <!-- Search Bar -->
+        <input type="text" id="searchBar" class="search-bar" placeholder="Search job roles..." oninput="filterJobRoles()">
+
+        <!-- Job Roles -->
+        <div class="job-roles" id="jobRoles">
+            <div class="job-role" onclick="selectJobRole('ai_ml_engineer')">
+                <i class="fas fa-robot"></i>
+                <h2>AI/ML Engineer</h2>
+                <p>
+                    Build intelligent systems and algorithms that power machine learning models. 
+                    Work on cutting-edge applications like natural language processing, computer vision, and predictive analytics.
+                </p>
+            </div>
+            <div class="job-role" onclick="selectJobRole('ai_research_scientist')">
+                <i class="fas fa-microscope"></i>
+                <h2>AI Research Scientist</h2>
+                <p>
+                    Conduct groundbreaking research in artificial intelligence. 
+                    Focus on areas like reinforcement learning, generative models, and AI ethics to push the boundaries of technology.
+                </p>
+            </div>
+            <div class="job-role" onclick="selectJobRole('data_scientist')">
+                <i class="fas fa-chart-line"></i>
+                <h2>Data Scientist</h2>
+                <p>
+                    Analyze and interpret complex data to drive decision-making. 
+                    Use statistical methods, machine learning, and data visualization to uncover insights and solve real-world problems.
+                </p>
+            </div>
+            <div class="job-role" onclick="selectJobRole('ai_ethics_specialist')">
+                <i class="fas fa-balance-scale"></i>
+                <h2>AI Ethics Specialist</h2>
+                <p>
+                    Ensure AI systems are developed and deployed responsibly. 
+                    Address ethical concerns like bias, fairness, and transparency in AI technologies.
+                </p>
+            </div>
+            <div class="job-role" onclick="selectJobRole('robotics_engineer')">
+                <i class="fas fa-cogs"></i>
+                <h2>Robotics Engineer</h2>
+                <p>
+                    Design and develop robots for various applications, from industrial automation to healthcare. 
+                    Work on hardware, software, and AI integration to create intelligent machines.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        
+        function selectJobRole(jobRole) {
+            window.location.href = `companiesHiring.ejs?jobRole=${jobRole}`;
+        }
+        
+        function filterJobRoles() {
+            const searchTerm = document.getElementById('searchBar').value.toLowerCase();
+            const jobRoles = document.querySelectorAll('.job-role');
+            jobRoles.forEach(role => {
+                const roleName = role.querySelector('h2').textContent.toLowerCase();
+                if (roleName.includes(searchTerm)) {
+                    role.style.display = 'block';
+                } else {
+                    role.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

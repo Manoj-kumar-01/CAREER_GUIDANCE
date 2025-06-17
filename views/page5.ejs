@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress Towards Goal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Dark Theme Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #121212; /* Dark background */
+            color: #e0e0e0; /* Light text */
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #1e1e1e; /* Dark container */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            display: flex;
+            gap: 20px;
+        }
+        .left-panel {
+            flex: 3;
+        }
+        .right-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        h1 {
+            color: #bb86fc; /* Purple accent */
+        }
+        .progress-bar-container {
+            width: 100%;
+            height: 20px;
+            background: #444444; /* Dark background for bar */
+            border-radius: 10px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50, #ffc107, #f44336); /* Gradient for progress */
+            width: 0; /* Initially set to 0 */
+            transition: width 0.5s ease-in-out;
+        }
+        .progress-flag {
+            font-size: 48px;
+            color: #ffc107; /* Yellow flag */
+            display: none; /* Hidden by default */
+        }
+        .topics-list {
+            margin: 20px 0;
+        }
+        .topic-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: #2c2c2c; /* Darker background for topics */
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .topic-item input {
+            cursor: pointer;
+        }
+        .topic-item label {
+            flex: 1;
+        }
+        .priority-high { color: bisque; } /* Red for high priority */
+        .priority-medium { color: #ffc107; } /* Yellow for medium priority */
+        .priority-low { color: #4caf50; } /* Green for low priority */
+        .completed {
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+        .final-note {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #bb86fc; /* Purple accent */
+        }
+        .project-upload {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .project-upload input[type="file"] {
+            display: none;
+        }
+        .project-upload label {
+            background: #bb86fc; /* Purple accent */
+            color: #121212; /* Dark text */
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s ease;
+            text-align: center;
+        }
+        .project-upload label:hover {
+            background: #9a67ea; /* Lighter purple on hover */
+        }
+        .project-description {
+            width: 200px; /* Fixed width for text box */
+            padding: 10px;
+            background: #333333; /* Dark background for textarea */
+            border: 1px solid #444444;
+            border-radius: 5px;
+            color: #e0e0e0;
+            font-family: 'Poppins', sans-serif;
+            resize: vertical;
+        }
+        .project-description::placeholder {
+            color: #888888;
+        }
+        .confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Left Panel -->
+        <div class="left-panel">
+            <h1>Progress Towards Your Goal at <span id="companyName"></span></h1>
+            
+            <!-- Progress Bar -->
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+
+            <!-- Topics List -->
+            <div class="topics-list" id="topicsList"></div>
+
+            <!-- Final Note -->
+            <div class="final-note">
+                <p>You must complete <strong>18 skills</strong> and <strong>7 projects</strong> (4 real-world solutions and 3 others) to reach 100%.</p>
+                <p>Only after completing these will you be ready for the interview.</p>
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="right-panel">
+            <div class="progress-flag" id="progressFlag">🚩</div>
+        </div>
+    </div>
+
+    <!-- Confetti Animation -->
+    <div class="confetti" id="confetti"></div>
+
+    <script>
+        // Fetch job role and company from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const jobRole = urlParams.get('jobRole');
+        const company = urlParams.get('company');
+
+        // Display company name
+        document.getElementById('companyName').innerText = company;
+
+        // Common skills applicable to all roles
+        const commonSkills = [
+            { name: "Communication Skills", priority: "low" },
+            { name: "Problem-Solving Skills", priority: "medium" },
+            { name: "Data Structures and Algorithms", priority: "high" },
+            { name: "Version Control (Git)", priority: "medium" },
+            { name: "Agile Methodologies", priority: "medium" },
+            { name: "Time Management", priority: "low" },
+            { name: "Team Collaboration", priority: "low" }
+        ];
+
+        // Role-specific skills
+        const roleSkills = {
+            ai_ml_engineer: [
+                { name: "Python Programming", priority: "high" },
+                { name: "Machine Learning Basics", priority: "high" },
+                { name: "Deep Learning Frameworks (TensorFlow/PyTorch)", priority: "high" },
+                { name: "Mathematics for Machine Learning", priority: "high" },
+                { name: "Statistics and Probability", priority: "high" },
+                { name: "Natural Language Processing (NLP)", priority: "high" },
+                { name: "Computer Vision", priority: "high" },
+                { name: "Data Visualization (Matplotlib/Seaborn)", priority: "medium" },
+                { name: "Big Data Tools (Hadoop/Spark)", priority: "medium" },
+                { name: "Cloud Computing Basics (AWS/GCP/Azure)", priority: "high" }
+            ],
+            ai_research_scientist: [
+                { name: "Advanced Mathematics (Linear Algebra, Calculus)", priority: "high" },
+                { name: "Research Methodology", priority: "high" },
+                { name: "Reinforcement Learning", priority: "high" },
+                { name: "Generative Models (GANs, VAEs)", priority: "high" },
+                { name: "Scientific Writing and Publishing", priority: "medium" },
+                { name: "Ethics in AI Research", priority: "medium" },
+                { name: "Experimental Design", priority: "medium" },
+                { name: "High-Performance Computing", priority: "medium" },
+                { name: "Collaborative Research Tools", priority: "low" }
+            ],
+            data_scientist: [
+                { name: "Python Programming", priority: "high" },
+                { name: "Data Analysis (Pandas/Numpy)", priority: "high" },
+                { name: "Data Visualization (Matplotlib/Seaborn)", priority: "medium" },
+                { name: "Statistics and Probability", priority: "high" },
+                { name: "Machine Learning Basics", priority: "high" },
+                { name: "SQL and Database Management", priority: "medium" },
+                { name: "Big Data Tools (Hadoop/Spark)", priority: "medium" },
+                { name: "Data Wrangling and Cleaning", priority: "medium" },
+                { name: "Cloud Computing Basics (AWS/GCP/Azure)", priority: "high" },
+                { name: "A/B Testing", priority: "medium" }
+            ],
+            ai_ethics_specialist: [
+                { name: "Ethics in AI", priority: "high" },
+                { name: "Bias and Fairness in AI", priority: "high" },
+                { name: "AI Policy and Regulation", priority: "high" },
+                { name: "Social Impact of AI", priority: "medium" },
+                { name: "Explainable AI (XAI)", priority: "medium" },
+                { name: "Privacy and Security in AI", priority: "medium" },
+                { name: "Stakeholder Engagement", priority: "low" },
+                { name: "Ethical Decision-Making Frameworks", priority: "medium" }
+            ],
+            robotics_engineer: [
+                { name: "C++ Programming", priority: "high" },
+                { name: "Robotics Operating System (ROS)", priority: "high" },
+                { name: "Control Systems", priority: "high" },
+                { name: "Computer Vision for Robotics", priority: "high" },
+                { name: "Sensor Fusion", priority: "medium" },
+                { name: "Path Planning and Navigation", priority: "medium" },
+                { name: "Embedded Systems", priority: "medium" },
+                { name: "Mechanical Design Basics", priority: "medium" },
+                { name: "Simulation Tools (Gazebo, Unity)", priority: "medium" }
+            ]
+        };
+
+        // Projects (7 in total: 4 real-world, 3 personal)
+        const projects = [
+            { name: "Real-World Project 1", priority: "high", type: "project" },
+            { name: "Real-World Project 2", priority: "high", type: "project" },
+            { name: "Real-World Project 3", priority: "high", type: "project" },
+            { name: "Real-World Project 4", priority: "high", type: "project" },
+            { name: "Personal Project 1", priority: "medium", type: "project" },
+            { name: "Personal Project 2", priority: "medium", type: "project" },
+            { name: "Personal Project 3", priority: "medium", type: "project" }
+        ];
+
+        // Combine common skills, role-specific skills, and projects
+        const jobTopics = [...commonSkills, ...(roleSkills[jobRole] || []), ...projects];
+
+        // Load topics for the selected company and job role
+        const topicsList = document.getElementById('topicsList');
+        jobTopics.forEach((topic, index) => {
+            const topicItem = document.createElement('div');
+            topicItem.className = 'topic-item';
+            topicItem.innerHTML = `
+                <input type="checkbox" id="topic${index}" onchange="updateProgress()" ${topic.type === 'project' ? 'disabled' : ''}>
+                <label for="topic${index}" class="${topic.priority === 'high' ? 'priority-high' : topic.priority === 'medium' ? 'priority-medium' : 'priority-low'}">${topic.name}</label>
+            `;
+
+            // Add file upload and description for projects
+            if (topic.type === 'project') {
+                topicItem.innerHTML += `
+                    <div class="project-upload">
+                        <textarea class="project-description" id="description${index}" placeholder="Describe your project in less than 500 words..." maxlength="500"></textarea>
+                        <input type="file" id="file${index}" onchange="handleFileUpload(${index})">
+                        <label for="file${index}">Upload Project</label>
+                    </div>
+                `;
+            }
+
+            topicsList.appendChild(topicItem);
+        });
+
+        // Handle file upload
+        function handleFileUpload(index) {
+            const fileInput = document.getElementById(`file${index}`);
+            const description = document.getElementById(`description${index}`);
+            const checkbox = document.getElementById(`topic${index}`);
+            if (fileInput.files.length > 0 && description.value.trim() !== '') {
+                checkbox.disabled = false; // Enable checkbox after file upload and description
+            }
+        }
+
+        // Update progress bar
+        function updateProgress() {
+            const totalSkills = 18;
+            const totalProjects = 7;
+            const completedSkills = document.querySelectorAll('.topic-item input:checked:not([disabled])').length;
+            const completedProjects = document.querySelectorAll('.topic-item input:checked[disabled]').length;
+
+            // Calculate progress (50% for skills, 50% for projects)
+            const skillProgress = (completedSkills / totalSkills) * 50;
+            const projectProgress = (completedProjects / totalProjects) * 50;
+            const totalProgress = skillProgress + projectProgress;
+
+            const progress = Math.min(totalProgress, 100);
+
+
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = `${progress}%`;
+
+            const progressFlag = document.getElementById('progressFlag');
+            if (progress === 100) {
+                progressFlag.style.display = 'block';
+                showConfetti();
+                alert("Congratulations! You're ready for the interview.");
+            } else {
+                progressFlag.style.display = 'none';
+            }
+
+            localStorage.setItem(`${company}-${jobRole}-progress`, progress);
+        }
+
+        
+        function showConfetti() {
+            const confettiContainer = document.getElementById('confetti');
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti-piece';
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.animationDelay = `${Math.random() * 2}s`;
+                confettiContainer.appendChild(confetti);
+            }
+        }
+
+        const savedProgress = localStorage.getItem(`${company}-${jobRole}-progress`) || 0;
+        document.getElementById('progressBar').style.width = `${savedProgress}%`;
+    </script>
+</body>
+</html>

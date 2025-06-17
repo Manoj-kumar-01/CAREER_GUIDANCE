@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareerGenius - AI-Powered Career Guidance</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        
+        :root {
+            --neon-primary: #00ffcc;
+            --neon-secondary: #2575fc;
+            --neon-tertiary: #6a11cb;
+            --dark-bg: #0a0a0a;
+            --darker-bg: #050505;
+            --text-primary: #f0f0f0;
+            --text-secondary: #b0b0b0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Ultra-Smooth Transitions */
+        * {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* 3D Background Container */
+        #threejs-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        /* News Ticker Section */
+        .news-ticker {
+            background: rgba(0, 0, 0, 0.7);
+            border-bottom: 1px solid #00ffcc;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.3);
+            padding: 10px 0;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .news-container {
+            display: flex;
+            animation: ticker 30s linear infinite;
+            white-space: nowrap;
+        }
+        
+        .news-item {
+            margin-right: 50px;
+            color: #ffffff;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .news-item::before {
+            content: '•';
+            color: #00ffcc;
+            margin-right: 10px;
+            text-shadow: 0 0 5px #00ffcc;
+        }
+        
+        .news-item a {
+            color: #00ffcc;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .news-item a:hover {
+            color: #ffffff;
+            text-shadow: 0 0 10px #00ffcc;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 255, 204, 0.2);
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.8rem;
+            letter-spacing: 1px;
+        }
+
+        .brand-neon {
+            text-shadow: 0 0 10px #00ffcc, 
+                         0 0 20px #00ffcc, 
+                         0 0 30px #00ffcc,
+                         0 0 40px #2575fc,
+                         0 0 70px #2575fc,
+                         0 0 80px #2575fc,
+                         0 0 100px #6a11cb,
+                         0 0 150px #6a11cb;
+            animation: neon-pulse 3s ease infinite;
+            color: #00ffcc;
+        }
+
+        /* Enhanced Profile Section */
+        .profile-img-container {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        .profile-img {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            border: 2px solid var(--neon-primary);
+            box-shadow: 0 0 15px var(--neon-primary);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+
+        .profile-hover-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0, 255, 204, 0.2);
+        }
+
+        .profile-hover-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--neon-primary);
+            margin-right: 15px;
+            object-fit: cover;
+        }
+
+        .profile-hover-info h5 {
+            color: var(--neon-primary);
+            margin-bottom: 3px;
+            font-size: 1.1rem;
+        }
+
+        .profile-hover-info p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 0;
+        }
+
+        .profile-hover-btn {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            background: transparent;
+            border: 1px solid var(--neon-primary);
+            color: var(--neon-primary);
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.9rem;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .profile-hover-btn:hover {
+            background: var(--neon-primary);
+            color: var(--dark-bg);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 204, 0.4);
+        }
+        .profile-hover-card {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+}
+
+    .profile-hover-card.show-card {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+
+        /* Hero Section */
+        .hero-section {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 700px;
+        }
+
+        /* Section Headings */
+        .section-heading {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .section-heading .main-text {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--neon-primary), var(--neon-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(0, 255, 204, 0.3);
+        }
+
+        .section-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--neon-primary), var(--neon-secondary));
+            border-radius: 3px;
+            box-shadow: 0 0 10px var(--neon-primary);
+            transition: all 0.5s ease;
+        }
+
+        /* Branch Selection Section */
+        .branch-section {
+            background: rgba(15, 15, 15, 0.7);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 5rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .branch-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, 
+                rgba(37, 117, 252, 0.1) 0%, 
+                transparent 50%);
+            z-index: -1;
+        }
+
+        .branch-card {
+            background: rgba(30, 30, 30, 0.6);
+            border: 1px solid rgba(0, 255, 204, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .branch-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 255, 204, 0.2);
+            border-color: var(--neon-primary);
+        }
+
+        .branch-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                transparent 0%,
+                rgba(0, 255, 204, 0.1) 50%,
+                transparent 100%
+            );
+            transform: rotate(30deg);
+            transition: all 0.5s ease;
+            opacity: 0;
+        }
+
+        .branch-card:hover::before {
+            animation: shine 1.5s;
+        }
+
+        .branch-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--neon-primary);
+        }
+
+        .branch-desc {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Quiz Section */
+        .quiz-section {
+            background: rgba(15, 15, 15, 0.7);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 5rem 0;
+            position: relative;
+        }
+
+        .quiz-section::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="none" stroke="rgba(0,255,204,0.05)" stroke-width="0.5" d="M0,0 L100,100 M100,0 L0,100"></path></svg>');
+            background-size: 30px 30px;
+            opacity: 0.5;
+            z-index: -1;
+        }
+
+        .quiz-desc {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 700px;
+        }
+
+        .expectations-card {
+            background: rgba(30, 30, 40, 0.9);
+            border: 1px solid var(--neon-primary);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
+        }
+
+        .expectations-title {
+            color: var(--neon-primary);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(0, 255, 204, 0.3);
+        }
+
+        .expectations-item {
+            color: var(--text-primary);
+            margin-bottom: 0.8rem;
+            font-size: 1rem;
+        }
+
+        .expectations-item i {
+            color: var(--neon-primary);
+            margin-right: 10px;
+        }
+
+        /* Review Section */
+        .review-section {
+            background: rgba(15, 15, 15, 0.7);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 5rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .review-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 80% 20%, 
+                rgba(106, 17, 203, 0.1) 0%, 
+                transparent 50%);
+            z-index: -1;
+        }
+
+        .review-card {
+            background: rgba(40, 40, 40, 0.6);
+            border: 1px solid rgba(0, 255, 204, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .review-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 255, 204, 0.2);
+            border-color: var(--neon-primary);
+        }
+
+        .review-text {
+            font-style: italic;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .review-text::before,
+        .review-text::after {
+            content: '"';
+            color: var(--neon-primary);
+            font-size: 2rem;
+            line-height: 0;
+            position: absolute;
+        }
+
+        .review-text::before {
+            top: 0;
+            left: -15px;
+        }
+
+        .review-text::after {
+            bottom: -15px;
+            right: -15px;
+        }
+
+        .review-author {
+            font-weight: 600;
+            color: var(--neon-primary);
+        }
+
+        .review-role {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Review Form */
+        .review-form {
+            background: rgba(40, 40, 40, 0.7);
+            border: 1px solid var(--neon-primary);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 3rem;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .review-form.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .form-control {
+            background: rgba(30, 30, 30, 0.8);
+            border: 1px solid rgba(0, 255, 204, 0.3);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            background: rgba(40, 40, 40, 0.9);
+            border-color: var(--neon-primary);
+            box-shadow: 0 0 10px var(--neon-primary);
+            color: white;
+        }
+
+        /* Buttons */
+        .btn-neon {
+            background: transparent;
+            color: var(--neon-primary);
+            border: 2px solid var(--neon-primary);
+            border-radius: 50px;
+            padding: 0.8rem 2rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-neon:hover {
+            color: var(--dark-bg);
+            background: var(--neon-primary);
+            box-shadow: 0 0 20px var(--neon-primary);
+            transform: translateY(-3px);
+        }
+
+        .btn-neon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(0, 255, 204, 0.4),
+                transparent
+            );
+            transition: all 0.5s ease;
+        }
+
+        .btn-neon:hover::before {
+            left: 100%;
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(10, 10, 10, 0.9);
+            border-top: 1px solid rgba(0, 255, 204, 0.2);
+            padding: 3rem 0;
+            margin-top: 5rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            margin: 0 1rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--neon-primary);
+        }
+
+        /* Animations */
+        @keyframes neon-pulse {
+            0%, 100% { 
+                text-shadow: 0 0 10px #00ffcc, 
+                             0 0 20px #00ffcc, 
+                             0 0 30px #00ffcc,
+                             0 0 40px #2575fc,
+                             0 0 70px #2575fc,
+                             0 0 80px #2575fc,
+                             0 0 100px #6a11cb,
+                             0 0 150px #6a11cb;
+            }
+            50% { 
+                text-shadow: 0 0 15px #00ffcc, 
+                             0 0 25px #00ffcc, 
+                             0 0 35px #00ffcc,
+                             0 0 45px #2575fc,
+                             0 0 75px #2575fc,
+                             0 0 85px #2575fc,
+                             0 0 110px #6a11cb,
+                             0 0 160px #6a11cb;
+            }
+        }
+
+        @keyframes ticker {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        @keyframes shine {
+            0% { opacity: 0; left: -50%; }
+            50% { opacity: 0.5; }
+            100% { opacity: 0; left: 150%; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .hero-title {
+                font-size: 3rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .section-heading .main-text {
+                font-size: 2.2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .branch-section, .quiz-section, .review-section {
+                padding: 2rem;
+            }
+            
+            .section-heading .main-text {
+                font-size: 2rem;
+            }
+
+            .profile-hover-card {
+                width: 260px;
+                right: -30px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+            
+            .branch-section, .quiz-section, .review-section {
+                padding: 1.5rem;
+            }
+            
+            .section-heading .main-text {
+                font-size: 1.8rem;
+            }
+
+            .profile-hover-card {
+                width: 240px;
+                right: -50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Enhanced 3D Background -->
+    <div id="threejs-container"></div>
+
+    <!-- News Ticker Section -->
+    <div class="news-ticker">
+        <div class="news-container">
+            <div class="news-item">
+                <a href="#">AI job market grows 75% in 2023 - What skills are in demand?</a>
+            </div>
+            <div class="news-item">
+                <a href="#">New study reveals the top 10 emerging tech careers for 2024</a>
+            </div>
+            <div class="news-item">
+                <a href="#">How to future-proof your career in the age of automation</a>
+            </div>
+            <div class="news-item">
+                <a href="#">Remote work trends: Which tech jobs offer the most flexibility?</a>
+            </div>
+            <div class="news-item">
+                <a href="#">The rise of green tech careers: Opportunities in sustainability</a>
+            </div>
+        </div>
+    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark py-3">
+        <div class="container">
+            <a class="navbar-brand brand-neon" href="/">
+                <i class="fas fa-robot me-2"></i>CareerGenius
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="text-white me-3">Welcome, <%= user.username %>!</span>
+                <div class="profile-img-container">
+                    <img src="/images/<%= user.profilePhoto || 'profilePic1.png' %>" 
+                         class="profile-img"
+                         alt="Profile">
+                    
+                    <!-- Profile Dropdown Card -->
+                    <div class="profile-hover-card">
+                        <div class="profile-hover-header">
+                            <img src="/images/<%= user.profilePhoto || 'profilePic1.png' %>" 
+                                 class="profile-hover-img"
+                                 alt="Profile">
+                            <div class="profile-hover-info">
+                                <h5><%= user.username %></h5>
+                                <p><%= user.email %></p>
+                            </div>
+                        </div>
+                        <button onclick="gotoProfile()" class="profile-hover-btn">
+                            <i class="fas fa-user-edit me-2"></i>Edit Profile
+                        </button>
+                        <button onclick="logout()" class="profile-hover-btn mt-2">
+                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                        </button>                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-7 hero-content">
+                    <h1 class="hero-title animate__animated animate__fadeInDown">
+                        <span class="dream-neon">Discover Your Dream Career</span>
+                    </h1>
+                    <p class="hero-subtitle animate__animated animate__fadeIn animate__delay-1s">
+                        Our AI-powered platform analyzes your skills and preferences to match you with 
+                        the perfect career path in emerging technologies.
+                    </p>
+                    <div class="animate__animated animate__fadeInUp animate__delay-2s">
+                        <a href="#branch-selection" class="btn btn-neon me-3">
+                            <i class="fas fa-rocket me-2"></i>Get Started
+                        </a>
+                        <a href="#quiz-section" class="btn btn-outline-light">
+                            <i class="fas fa-graduation-cap me-2"></i>Take Quiz
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-5 d-none d-lg-block">
+                    <div id="career-visualization" style="width: 100%; height: 400px;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Branch Selection Section -->
+    <section id="branch-selection" class="branch-section">
+        <div class="container text-center">
+            <div class="section-heading">
+                <span class="main-text">Select Your Engineering Branch</span>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="branch-card h-100" onclick="selectBranch('Computer Science')">
+                        <div class="branch-name">
+                            <i class="fas fa-laptop-code me-2"></i>Computer Science
+                        </div>
+                        <p class="branch-desc">
+                            Explore careers in AI, Machine Learning, Cybersecurity, and Software Development.
+                        </p>
+                        <button class="btn btn-sm btn-neon">View Emerging Fields</button>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="branch-card h-100" onclick="selectBranch('Electronics')">
+                        <div class="branch-name">
+                            <i class="fas fa-microchip me-2"></i>Electronics
+                        </div>
+                        <p class="branch-desc">
+                            Discover opportunities in IoT, VLSI, Embedded Systems, and Semiconductor Tech.
+                        </p>
+                        <button class="btn btn-sm btn-neon">View Emerging Fields</button>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="branch-card h-100" onclick="selectBranch('Mechanical')">
+                        <div class="branch-name">
+                            <i class="fas fa-cogs me-2"></i>Mechanical
+                        </div>
+                        <p class="branch-desc">
+                            Explore robotics, automotive, aerospace, and sustainable energy careers.
+                        </p>
+                        <button class="btn btn-sm btn-neon">View Emerging Fields</button>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="branch-card h-100" onclick="selectBranch('Civil')">
+                        <div class="branch-name">
+                            <i class="fas fa-building me-2"></i>Civil
+                        </div>
+                        <p class="branch-desc">
+                            Discover smart cities, sustainable architecture, and infrastructure tech.
+                        </p>
+                        <button class="btn btn-sm btn-neon">View Emerging Fields</button>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="branch-card h-100" onclick="selectBranch('Electrical')">
+                        <div class="branch-name">
+                            <i class="fas fa-bolt me-2"></i>Electrical
+                        </div>
+                        <p class="branch-desc">
+                            Explore smart grids, renewable energy, and power systems innovation.
+                        </p>
+                        <button class="btn btn-sm btn-neon">View Emerging Fields</button>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="branch-card h-100" onclick="selectBranch('Chemical')">
+                        <div class="branch-name">
+                            <i class="fas fa-flask me-2"></i>Chemical
+                        </div>
+                        <p class="branch-desc">
+                            Discover biotech, nanomaterials, and sustainable chemical processes.
+                        </p>
+                        <button class="btn btn-sm btn-neon">View Emerging Fields</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Career Quiz Section -->
+    <section id="quiz-section" class="quiz-section">
+        <div class="container text-center">
+            <div class="section-heading">
+                <span class="main-text">Career Strengthen Quiz</span>
+            </div>
+            <p class="quiz-desc mx-auto">
+                Take our 10-minute quiz to discover your ideal career path based on your skills, 
+                personality, and aspirations. Get personalized recommendations and action plans.
+            </p>
+            <a href="/career-quiz" class="btn btn-neon btn-lg px-5 py-3">
+                <i class="fas fa-play me-2"></i>Start Quiz Now
+            </a>
+            
+            <div class="mt-5 pt-4">
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="expectations-card">
+                            <h5 class="expectations-title">What to Expect</h5>
+                            <div class="row text-start">
+                                <div class="col-md-6">
+                                    <p class="expectations-item"><i class="fas fa-check-circle"></i> Personalized career matches</p>
+                                    <p class="expectations-item"><i class="fas fa-check-circle"></i> Skill gap analysis</p>
+                                    <p class="expectations-item"><i class="fas fa-check-circle"></i> Detailed career roadmaps</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="expectations-item"><i class="fas fa-check-circle"></i> Industry demand insights</p>
+                                    <p class="expectations-item"><i class="fas fa-check-circle"></i> Salary potential data</p>
+                                    <p class="expectations-item"><i class="fas fa-check-circle"></i> Recommended courses</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Review Section -->
+    <section class="review-section">
+        <div class="container">
+            <div class="section-heading text-center">
+                <span class="main-text">Success Stories</span>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="review-card h-100">
+                        <div class="review-text">
+                            CareerGenius helped me identify my perfect career path in AI when I was completely lost. The quiz was incredibly accurate!
+                        </div>
+                        <div class="review-author">Sarah Johnson</div>
+                        <div class="review-role">AI Engineer at TechNova</div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="review-card h-100">
+                        <div class="review-text">
+                            The branch selection tool showed me emerging fields I never considered. Now I'm working in sustainable energy and loving it!
+                        </div>
+                        <div class="review-author">Michael Chen</div>
+                        <div class="review-role">Energy Systems Specialist</div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="review-card h-100">
+                        <div class="review-text">
+                            As a recent graduate, the career roadmap feature gave me clear steps to break into cybersecurity. Landed my dream job in 3 months!
+                        </div>
+                        <div class="review-author">David Rodriguez</div>
+                        <div class="review-role">Cybersecurity Analyst</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="review-form" id="reviewForm">
+                <h5 class="text-center mb-4 neon-text">Share Your Experience</h5>
+                <form id="submitReview">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="reviewName" placeholder="Your Name" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="reviewRole" placeholder="Your Role (optional)">
+                    </div>
+                    <div class="mb-3">
+                        <textarea class="form-control" id="reviewText" rows="3" placeholder="Your experience with CareerGenius..." required></textarea>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-neon">Submit Review</button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="text-center mt-4">
+                <button onclick="showReviewForm()" class="btn btn-neon" id="showReviewBtn">
+                    <i class="fas fa-plus me-2"></i>Add Your Review
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0">&copy; 2023 CareerGenius. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <div class="footer-links">
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Service</a>
+                        <a href="#">Contact Us</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Three.js Background -->
+    <script>
+        // Three.js Background
+        const container = document.getElementById('threejs-container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
+
+        // Add floating particles
+        const particles = new THREE.BufferGeometry();
+        const particleCount = 1000;
+        const posArray = new Float32Array(particleCount * 3);
+        for(let i = 0; i < particleCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 10;
+        }
+        particles.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const particleMaterial = new THREE.PointsMaterial({
+            size: 0.1,
+            transparent: true,
+            opacity: 0.8
+        });
+        const particleMesh = new THREE.Points(particles, particleMaterial);
+        scene.add(particleMesh);
+        camera.position.z = 5;
+        function animate() {
+            requestAnimationFrame(animate);
+            particleMesh.rotation.x += 0.0005;
+            particleMesh.rotation.y += 0.0005;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+
+    <!-- Custom JavaScript -->
+    <script>
+        // Profile hover functionality - Fixed Version
+        document.addEventListener('DOMContentLoaded', function() {
+            const profileContainer = document.querySelector('.profile-img-container');
+            const hoverCard = document.querySelector('.profile-hover-card');
+            
+            let hoverTimeout;
+            
+            // Show card when hovering profile image
+            profileContainer.addEventListener('mouseenter', function() {
+                clearTimeout(hoverTimeout);
+                hoverCard.style.opacity = '1';
+                hoverCard.style.visibility = 'visible';
+                hoverCard.style.transform = 'translateY(0)';
+            });
+            
+            // Hide card with delay when leaving profile image
+            profileContainer.addEventListener('mouseleave', function() {
+                hoverTimeout = setTimeout(() => {
+                    hoverCard.style.opacity = '0';
+                    hoverCard.style.visibility = 'hidden';
+                    hoverCard.style.transform = 'translateY(10px)';
+                }, 300); // 300ms delay
+            });
+            
+            // Keep card visible when hovering over it
+            hoverCard.addEventListener('mouseenter', function() {
+                clearTimeout(hoverTimeout);
+                hoverCard.style.opacity = '1';
+                hoverCard.style.visibility = 'visible';
+                hoverCard.style.transform = 'translateY(0)';
+            });
+            
+            // Hide card when leaving it
+            hoverCard.addEventListener('mouseleave', function() {
+                hoverCard.style.opacity = '0';
+                hoverCard.style.visibility = 'hidden';
+                hoverCard.style.transform = 'translateY(10px)';
+            });
+        });
+
+        // Show review form with animation
+        function showReviewForm() {
+            const form = document.getElementById('reviewForm');
+            const btn = document.getElementById('showReviewBtn');
+            
+            form.classList.add('show');
+            btn.style.display = 'none';
+            
+            // Scroll to form
+            form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // Branch selection function
+        function selectBranch(branch) {
+            // Store selected branch in localStorage
+            localStorage.setItem('selectedBranch', branch);
+            
+            // Show confirmation with selected branch
+            alert(`You've selected ${branch}. Redirecting to career paths...`);
+            
+            // Redirect to careers page (you can modify this)
+            window.location.href = `http://localhost:3000/views/jobRoleSelection.ejs?branch=${encodeURIComponent(branch)}`;
+        }
+
+        document.getElementById('submitReview').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('reviewName').value;
+            const role = document.getElementById('reviewRole').value;
+            const text = document.getElementById('reviewText').value;
+            
+            // Here you would typically send this data to your backend
+            console.log('Review submitted:', { name, role, text });
+            
+            // Show success message
+            alert('Thank you for your review! It will be displayed after moderation.');
+            
+            // Reset form
+            this.reset();
+        });
+
+        // Animate elements when they come into view
+        function animateOnScroll() {
+            const elements = document.querySelectorAll('.branch-card, .review-card, .section-heading');
+            
+            elements.forEach(element => {
+                const elementPosition = element.getBoundingClientRect().top;
+                const screenPosition = window.innerHeight / 1.2;
+                
+                if(elementPosition < screenPosition) {
+                    element.classList.add('animate__animated', 'animate__fadeInUp');
+                }
+            });
+        }
+
+        // Run animation check on scroll
+        window.addEventListener('scroll', animateOnScroll);
+        
+        // Initial check in case elements are already visible
+        animateOnScroll();
+
+        // Initialize tooltips
+        document.addEventListener('DOMContentLoaded', function() {
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        function gotoProfile(){
+            window.location.href='http://127.0.0.1:3000/views/Profile.ejs';
+        }
+        function logout(){
+            window.location.href='/logout';
+        }
+    </script>
+    <script>
+        const profileImg = document.querySelector('.profile-img-container');
+        const hoverCard = document.querySelector('.profile-hover-card');
+      
+        profileImg.addEventListener('click', (e) => {
+          e.stopPropagation(); // prevent click from bubbling up
+          hoverCard.classList.toggle('active');
+        });
+      
+        // Optional: hide dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+          if (!profileImg.contains(e.target) && !hoverCard.contains(e.target)) {
+            hoverCard.classList.remove('active');
+          }
+        });
+      </script>
+      
+</body>
+</html>

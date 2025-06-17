@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice-Controlled Login</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; padding: 20px; background: #f8f9fa; }
+        .hidden { display: none; } 
+        .container { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
+        button { width: 100%; padding: 15px; margin: 10px 0; font-size: 18px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 5px; }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body onload="startVoiceAssistant()">
+    <h1>Voice Login</h1>
+
+    <!-- Login Container -->
+    <div class="container" id="login-container">
+        <p>Speak to enter your username and login.</p>
+        <p id="status">Status: Waiting for voice command...</p>
+        <button onclick="startListening()">🎤 Speak Now</button>
+    </div>
+
+    <!-- Class Selection Page (Initially Hidden) -->
+    <div class="container hidden" id="class-selection">
+        <h2>Welcome!</h2>
+        <p>Select your class by speaking:</p>
+        <button onclick="selectClass('Class 11')">Class 11</button>
+        <button onclick="selectClass('Class 12')">Class 12</button>
+        <button onclick="selectClass('UG')">UG</button>
+        <p id="status-class">Waiting for voice command...</p>
+    </div>
+
+    <!-- Exam Selection Page (Initially Hidden) -->
+    <div class="container hidden" id="exam-selection">
+        <h2>Select Your Exam</h2>
+        <p>Speak to select your exam:</p>
+        <button onclick="selectExam('JEE MAINS')">JEE MAINS</button>
+        <button onclick="selectExam('JEE ADVANCED')">JEE ADVANCED</button>
+        <button onclick="selectExam('BITSAT')">BITSAT</button>
+        <button onclick="selectExam('EMACET')">EMACET</button>
+        <p id="status-exam">Waiting for voice command...</p>
+    </div>
+
+    <!-- Year Selection Page (Initially Hidden) -->
+    <div class="container hidden" id="year-selection">
+        <h2>Select Year</h2>
+        <p>Speak to select the year for question papers:</p>
+        <button onclick="selectYear('2020')">2020</button>
+        <button onclick="selectYear('2021')">2021</button>
+        <button onclick="selectYear('2022')">2022</button>
+        <button onclick="selectYear('2023')">2023</button>
+        <p id="status-year">Waiting for voice command...</p>
+    </div>
+
+    <!-- PDF Audio Playback Section (Initially Hidden) -->
+    <div class="container hidden" id="pdf-audio-section">
+        <h2>PDF Audio Playback</h2>
+        <p id="pdf-status">Loading PDF and converting to audio...</p>
+        <button onclick="stopAudio()">⏹ Stop Audio</button>
+    </div>
+
+    <script>
+        let username = "";
+        let currentSpeech = null; // To manage the speech synthesis
+
+        function startListening() {
+            let recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'en-US';
+            recognition.start();
+
+            recognition.onresult = function(event) {
+                let text = event.results[0][0].transcript.toLowerCase().trim();
+                document.getElementById('status').innerText = "Recognized: " + text;
+
+                if (text.includes("my name is")) {
+                    username = text.replace("my name is", "").trim();
+                    speakText("Username set to " + username + ". Say 'Login now' to proceed.");
+                } else if (text.includes("login now")) {
+                    login();
+                } else {
+                    speakText("Command not recognized. Say 'My name is...' or 'Login now'.");
+                }
+            };
+
+            recognition.onerror = function() {
+                speakText("Sorry, I didn't catch that. Please try again.");
+            };
+        }
+
+        function login() {
+            if (!username) {
+                speakText("Please say your name first.");
+                return;
+            }
+
+            speakText("Login successful! Welcome, " + username);
+            document.getElementById("login-container").classList.add("hidden");
+            document.getElementById("class-selection").classList.remove("hidden");
+            setTimeout(startClassListening, 2000);
+        }
+
+        function startClassListening() {
+            speakText("Say 'Class 11', 'Class 12', or 'UG' to continue.");
+            let recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'en-US';
+            recognition.start();
+
+            recognition.onresult = function(event) {
+                let text = event.results[0][0].transcript.toLowerCase().trim();
+                document.getElementById('status-class').innerText = "Recognized: " + text;
+
+                if (text.includes("class 11")) selectClass("Class 11");
+                else if (text.includes("class 12")) selectClass("Class 12");
+                else if (text.includes("ug")) selectClass("UG");
+                else speakText("Class not recognized. Try again.");
+            };
+        }
+
+        function selectClass(className) {
+            speakText("You selected " + className + ". Now select your exam.");
+            document.getElementById("class-selection").classList.add("hidden");
+            document.getElementById("exam-selection").classList.remove("hidden");
+            setTimeout(startExamListening, 2000);
+        }
+
+        function startExamListening() {
+            speakText("Say 'JEE MAINS', 'JEE ADVANCED', 'BITSAT', or 'EMACET' to continue.");
+            let recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'en-US';
+            recognition.start();
+
+            recognition.onresult = function(event) {
+                let text = event.results[0][0].transcript.toLowerCase().trim();
+                document.getElementById('status-exam').innerText = "Recognized: " + text;
+
+                if (text.includes("jee mains")) selectExam("JEE MAINS");
+                else if (text.includes("jee advanced")) selectExam("JEE ADVANCED");
+                else if (text.includes("bitsat")) selectExam("BITSAT");
+                else if (text.includes("emacet")) selectExam("EMACET");
+                else speakText("Exam not recognized. Try again.");
+            };
+        }
+
+        function selectExam(examName) {
+            speakText("You selected " + examName + ". Now select the year for question papers.");
+            document.getElementById("exam-selection").classList.add("hidden");
+            document.getElementById("year-selection").classList.remove("hidden");
+            setTimeout(startYearListening, 2000);
+        }
+
+        function startYearListening() {
+            speakText("Say '2020', '2021', '2022', or '2023' to continue.");
+            let recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'en-US';
+            recognition.start();
+
+            recognition.onresult = function(event) {
+                let text = event.results[0][0].transcript.toLowerCase().trim();
+                document.getElementById('status-year').innerText = "Recognized: " + text;
+
+                if (text.includes("2020")) selectYear("2020");
+                else if (text.includes("2021")) selectYear("2021");
+                else if (text.includes("2022")) selectYear("2022");
+                else if (text.includes("2023")) selectYear("2023");
+                else speakText("Year not recognized. Try again.");
+            };
+        }
+
+        function selectYear(year) {
+            speakText("You selected " + year + ". Loading JEE MAINS " + year + " question papers...");
+            document.getElementById("year-selection").classList.add("hidden");
+            document.getElementById("pdf-audio-section").classList.remove("hidden");
+
+            // Load the PDF and convert it to audio
+            const pdfUrl = `https://www.mathongo.com/iit-jee/jee-main-previous-year-question-paper-2024.pdf`; // Replace with the actual PDF URL
+            loadAndReadPDF(pdfUrl);
+        }
+
+        function loadAndReadPDF(pdfUrl) {
+            const loadingTask = pdfjsLib.getDocument(pdfUrl);
+            loadingTask.promise.then(pdf => {
+                let textContent = "";
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    pdf.getPage(i).then(page => {
+                        page.getTextContent().then(text => {
+                            text.items.forEach(item => {
+                                textContent += item.str + " ";
+                            });
+
+                            // Once all pages are processed, convert text to audio
+                            if (i === pdf.numPages) {
+                                document.getElementById("pdf-status").innerText = "PDF loaded. Playing audio...";
+                                speakText(textContent);
+                            }
+                        });
+                    });
+                }
+            }).catch(error => {
+                document.getElementById("pdf-status").innerText = "Failed to load PDF.";
+                console.error("Error loading PDF:", error);
+            });
+        }
+
+        function speakText(text) {
+            if (currentSpeech) {
+                window.speechSynthesis.cancel(); // Stop any ongoing speech
+            }
+            currentSpeech = new SpeechSynthesisUtterance(text);
+            currentSpeech.lang = 'en-US';
+            window.speechSynthesis.speak(currentSpeech);
+        }
+
+        function stopAudio() {
+            if (currentSpeech) {
+                window.speechSynthesis.cancel();
+                document.getElementById("pdf-status").innerText = "Audio stopped.";
+            }
+        }
+
+        function startVoiceAssistant() {
+            speakText("Welcome to the voice login system. Say 'My name is...' to enter your username.");
+        }
+    </script>
+</body>
+</html>

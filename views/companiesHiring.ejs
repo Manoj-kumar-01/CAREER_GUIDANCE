@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Companies Hiring</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Dark Theme Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #121212; /* Dark background */
+            color: #e0e0e0; /* Light text */
+            padding: 40px; /* Increased padding */
+            margin: 0;
+        }
+        .container {
+            max-width: 1000px; /* Wider container */
+            margin: 0 auto;
+            background: #1e1e1e; /* Dark container */
+            padding: 40px; /* Increased padding */
+            border-radius: 15px; /* Rounded corners */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Stronger shadow */
+        }
+        h1 {
+            color: #bb86fc; /* Purple accent */
+            font-size: 2.5rem; /* Larger font size */
+            margin-bottom: 30px; /* Increased margin */
+            text-align: center;
+        }
+        .search-sort-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px; /* Increased margin */
+            gap: 20px; /* Space between elements */
+        }
+        .search-bar {
+            flex: 1;
+            padding: 15px; /* Increased padding */
+            background: #2c2c2c; /* Darker background for search bar */
+            border: none;
+            border-radius: 10px; /* Rounded corners */
+            color: #e0e0e0;
+            font-size: 1rem; /* Larger font size */
+        }
+        .sort-button {
+            background: #bb86fc; /* Purple accent */
+            color: #121212; /* Dark text */
+            border: none;
+            padding: 15px 30px; /* Increased padding */
+            border-radius: 10px; /* Rounded corners */
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem; /* Larger font size */
+            transition: background 0.3s ease;
+        }
+        .sort-button:hover {
+            background: #9a67ea; /* Lighter purple on hover */
+        }
+        .company {
+            margin: 30px 0; /* Increased margin */
+            padding: 30px; /* Increased padding */
+            background: #2c2c2c; /* Darker background for company cards */
+            border-radius: 15px; /* Rounded corners */
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .company:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); /* Stronger shadow */
+        }
+        .company-name {
+            font-weight: bold;
+            color: #ffffff; /* White text for company name */
+            display: flex;
+            align-items: center;
+            gap: 20px; /* Increased gap */
+            font-size: 1.5rem; /* Larger font size */
+        }
+        .company-logo {
+            width: 50px; /* Larger logo */
+            height: 50px; /* Larger logo */
+            border-radius: 50%;
+        }
+        .reveal-button {
+            background: #bb86fc; /* Purple accent */
+            color: #121212; /* Dark text */
+            border: none;
+            padding: 15px 30px; /* Increased padding */
+            border-radius: 10px; /* Rounded corners */
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem; /* Larger font size */
+            transition: background 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px; /* Increased margin */
+        }
+        .reveal-button:hover {
+            background: #9a67ea; /* Lighter purple on hover */
+        }
+        .reveal-button .arrow {
+            transition: transform 0.3s ease;
+        }
+        .reveal-button.expanded .arrow {
+            transform: rotate(180deg);
+        }
+        .complexity-details {
+            display: none; /* Hidden by default */
+            margin-top: 20px; /* Increased margin */
+            padding: 20px; /* Increased padding */
+            background: #333333; /* Dark background for complexity details */
+            border-radius: 10px; /* Rounded corners */
+            color: #e0e0e0;
+        }
+        .complexity-bar {
+            width: 100%; /* Fixed width */
+            height: 15px; /* Thicker bar */
+            background: #444444; /* Dark background for bar */
+            border-radius: 10px; /* Rounded corners */
+            margin-top: 20px; /* Increased margin */
+            position: relative;
+            overflow: hidden;
+        }
+        .complexity-bar-fill {
+            height: 100%;
+            border-radius: 10px; /* Rounded corners */
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: linear-gradient(90deg, #4caf50, #ffc107, #f44336); /* Gradient for complexity */
+            width: 0; /* Initially set to 0 */
+            transition: width 1s ease-in-out;
+        }
+        .complexity-text {
+            margin-top: 20px; /* Increased margin */
+            font-size: 1.2rem; /* Larger font size */
+            color: #bb86fc; /* Purple accent */
+        }
+        .complexity-reason {
+            margin-top: 20px; /* Increased margin */
+            font-size: 1rem; /* Larger font size */
+            color: #e0e0e0;
+        }
+        .select-job-button {
+            background: #03dac6; /* Teal accent */
+            color: #121212; /* Dark text */
+            border: none;
+            padding: 15px 30px; /* Increased padding */
+            border-radius: 10px; /* Rounded corners */
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem; /* Larger font size */
+            transition: background 0.3s ease;
+            margin-top: 20px; /* Increased margin */
+        }
+        .select-job-button:hover {
+            background: #018786; /* Darker teal on hover */
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 150px; /* Wider tooltip */
+            background-color: #333333;
+            color: #e0e0e0;
+            text-align: center;
+            border-radius: 10px; /* Rounded corners */
+            padding: 10px; /* Increased padding */
+            position: absolute;
+            z-index: 1;
+            bottom: 125%; /* Position above the element */
+            left: 50%;
+            margin-left: -75px; /* Adjusted for wider tooltip */
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Companies Hiring for <span id="jobRoleTitle"></span></h1>
+        
+        <!-- Search and Sort Container -->
+        <div class="search-sort-container">
+            <input type="text" id="searchBar" class="search-bar" placeholder="Search companies..." oninput="filterCompanies()">
+            <button class="sort-button" onclick="sortCompanies('name')">Sort by Name</button>
+            <button class="sort-button" onclick="sortCompanies('complexity')">Sort by Complexity</button>
+        </div>
+
+        <!-- Companies List -->
+        <div id="companiesList"></div>
+    </div>
+
+    <script>
+        // Fetch job role from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const jobRole = urlParams.get('jobRole');
+
+        // Display job role title
+        document.getElementById('jobRoleTitle').innerText = jobRole.split('_').join(' ').toUpperCase();
+
+        // Companies data with complexity percentage
+        const companies = {
+            ai_ml_engineer: [
+                { 
+                    name: "Google", 
+                    logo: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg",
+                    complexity: 90, 
+                    description: "Highly competitive with rigorous interviews.",
+                    reason: "Google's hiring process includes multiple technical rounds, system design interviews, and behavioral assessments. The bar is extremely high, and candidates are expected to have deep expertise in algorithms, data structures, and machine learning."
+                },
+                { 
+                    name: "Microsoft", 
+                    logo: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg",
+                    complexity: 80, 
+                    description: "Strong focus on algorithms and system design.",
+                    reason: "Microsoft's interviews focus heavily on problem-solving, coding, and system design. Candidates are also evaluated on their ability to work in teams and communicate effectively."
+                },
+                { 
+                    name: "Amazon", 
+                    logo: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg",
+                    complexity: 85, 
+                    description: "High bar for technical and leadership skills.",
+                    reason: "Amazon's Leadership Principles are a key part of their hiring process. Candidates are tested on both technical skills (coding, algorithms) and leadership qualities (decision-making, customer obsession)."
+                },
+                { 
+                    name: "OpenAI", 
+                    logo: "https://upload.wikimedia.org/wikipedia/commons/4/4d/OpenAI_Logo.svg",
+                    complexity: 95, 
+                    description: "Cutting-edge research with intense competition.",
+                    reason: "OpenAI looks for candidates with strong research backgrounds and publications in top AI conferences. The interview process includes deep technical discussions and research presentations."
+                },
+                { 
+                    name: "NVIDIA", 
+                    logo: "https://upload.wikimedia.org/wikipedia/commons/2/21/NVIDIA_logo.svg",
+                    complexity: 75, 
+                    description: "Focus on deep learning and GPU programming.",
+                    reason: "NVIDIA's interviews focus on CUDA programming, deep learning frameworks, and optimization techniques. Candidates are expected to have hands-on experience with GPU-accelerated computing."
+                }
+            ],
+            ai_research_scientist: [
+                { 
+                    name: "DeepMind", 
+                    logo: "https://upload.wikimedia.org/wikipedia/commons/4/4a/DeepMind_logo.svg",
+                    complexity: 95, 
+                    description: "World-class research with high expectations.",
+                    reason: "DeepMind's hiring process is highly selective, focusing on research publications, technical expertise, and problem-solving skills. Candidates are expected to have a strong background in reinforcement learning, neural networks, and AI ethics."
+                },
+                { 
+                    name: "Facebook AI", 
+                    logo: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg",
+                    complexity: 85, 
+                    description: "Strong emphasis on publications and innovation.",
+                    reason: "Facebook AI looks for candidates with a strong publication record in top-tier conferences. The interview process includes research presentations, coding challenges, and discussions on AI ethics."
+                },
+                { 
+                    name: "IBM Research", 
+                    logo: "https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg",
+                    complexity: 80, 
+                    description: "Focus on practical AI applications.",
+                    reason: "IBM Research focuses on real-world AI applications. Candidates are evaluated on their ability to translate research into practical solutions, along with strong coding and problem-solving skills."
+                },
+                { 
+                    name: "Tesla", 
+                    logo: "https://upload.wikimedia.org/wikipedia/commons/b/bd/Tesla_Motors.svg",
+                    complexity: 90, 
+                    description: "Fast-paced environment with high expectations.",
+                    reason: "Tesla's interviews focus on AI applications in autonomous driving and robotics. Candidates are expected to have hands-on experience with computer vision, sensor fusion, and real-time systems."
+                },
+                { 
+                    name: "Apple", 
+                    logo: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg",
+                    complexity: 88, 
+                    description: "Focus on privacy and user-centric AI.",
+                    reason: "Apple's hiring process emphasizes privacy-preserving AI and user-centric design. Candidates are tested on their ability to develop secure and efficient AI systems."
+                }
+            ],
+            data_scientist: [
+                { 
+                    name: "Google", 
+                    logo: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg",
+                    complexity: 85, 
+                    description: "Focus on data-driven decision-making.",
+                    reason: "Google's data science roles require expertise in data analysis, machine learning, and statistical modeling. Candidates are expected to work with large datasets and derive actionable insights."
+                },
+                { 
+                    name: "Microsoft", 
+                    logo: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg",
+                    complexity: 80, 
+                    description: "Strong emphasis on data visualization and analytics.",
+                    reason: "Microsoft's data science roles focus on building predictive models and creating interactive dashboards. Candidates are tested on their ability to communicate insights effectively."
+                },
+                { 
+                    name: "Amazon", 
+                    logo: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg",
+                    complexity: 88, 
+                    description: "High bar for data-driven innovation.",
+                    reason: "Amazon's data science roles involve working on recommendation systems, fraud detection, and supply chain optimization. Candidates are expected to have strong problem-solving skills."
+                },
+                { 
+                    name: "Netflix", 
+                    logo: "https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg",
+                    complexity: 90, 
+                    description: "Focus on personalization and recommendation systems.",
+                    reason: "Netflix's data science roles require expertise in machine learning and big data technologies. Candidates are expected to work on improving user experience through data-driven insights."
+                },
+                { 
+                    name: "Uber", 
+                    logo: "https://upload.wikimedia.org/wikipedia/commons/5/58/Uber_logo_2018.svg",
+                    complexity: 87, 
+                    description: "Focus on real-time data processing and analytics.",
+                    reason: "Uber's data science roles involve working on dynamic pricing, route optimization, and demand forecasting. Candidates are expected to have strong programming and statistical skills."
+                }
+            ],
+            ai_ethics_specialist: [
+                { 
+                    name: "Google", 
+                    logo: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg",
+                    complexity: 88, 
+                    description: "Focus on ethical AI development.",
+                    reason: "Google's AI ethics roles require expertise in fairness, transparency, and accountability in AI systems. Candidates are expected to work on ethical guidelines and policy frameworks."
+                },
+                { 
+                    name: "Microsoft", 
+                    logo: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg",
+                    complexity: 85, 
+                    description: "Strong emphasis on responsible AI.",
+                    reason: "Microsoft's AI ethics roles focus on ensuring AI systems are fair, inclusive, and transparent. Candidates are expected to collaborate with researchers and policymakers."
+                },
+                { 
+                    name: "OpenAI", 
+                    logo: "https://upload.wikimedia.org/wikipedia/commons/4/4d/OpenAI_Logo.svg",
+                    complexity: 92, 
+                    description: "Focus on ethical AI research.",
+                    reason: "OpenAI's AI ethics roles involve researching and developing frameworks for ethical AI. Candidates are expected to have a strong background in AI ethics and policy."
+                },
+                { 
+                    name: "Facebook AI", 
+                    logo: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg",
+                    complexity: 87, 
+                    description: "Focus on fairness and bias in AI.",
+                    reason: "Facebook AI's ethics roles require expertise in identifying and mitigating bias in AI systems. Candidates are expected to work on improving fairness and inclusivity."
+                },
+                { 
+                    name: "IBM Research", 
+                    logo: "https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg",
+                    complexity: 83, 
+                    description: "Focus on ethical AI applications.",
+                    reason: "IBM Research's AI ethics roles involve developing ethical AI solutions for real-world problems. Candidates are expected to have strong analytical and communication skills."
+                }
+            ],
+            robotics_engineer: [
+                { 
+                    name: "Boston Dynamics", 
+                    logo: "https://upload.wikimedia.org/wikipedia/commons/6/6f/Boston_Dynamics_logo.svg",
+                    complexity: 90, 
+                    description: "Focus on advanced robotics and AI integration.",
+                    reason: "Boston Dynamics' robotics roles require expertise in mechanical design, control systems, and AI. Candidates are expected to work on cutting-edge robotics projects."
+                },
+                { 
+                    name: "Tesla", 
+                    logo: "https://upload.wikimedia.org/wikipedia/commons/b/bd/Tesla_Motors.svg",
+                    complexity: 88, 
+                    description: "Focus on autonomous vehicles and robotics.",
+                    reason: "Tesla's robotics roles involve working on self-driving cars and robotic systems. Candidates are expected to have strong programming and engineering skills."
+                },
+                { 
+                    name: "Amazon Robotics", 
+                    logo: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg",
+                    complexity: 85, 
+                    description: "Focus on warehouse automation and robotics.",
+                    reason: "Amazon Robotics' roles require expertise in robotics, automation, and AI. Candidates are expected to work on improving warehouse efficiency."
+                },
+                { 
+                    name: "iRobot", 
+                    logo: "https://upload.wikimedia.org/wikipedia/commons/7/7a/IRobot_logo.svg",
+                    complexity: 80, 
+                    description: "Focus on consumer robotics.",
+                    reason: "iRobot's roles involve developing robots for home use. Candidates are expected to have strong mechanical and software engineering skills."
+                },
+                { 
+                    name: "NASA", 
+                    logo: "https://upload.wikimedia.org/wikipedia/commons/e/e5/NASA_logo.svg",
+                    complexity: 92, 
+                    description: "Focus on space robotics and exploration.",
+                    reason: "NASA's robotics roles require expertise in robotics, AI, and space technology. Candidates are expected to work on missions involving robotic systems."
+                }
+            ]
+        };
+
+        // Display companies with complexity percentage
+        const companiesList = document.getElementById('companiesList');
+        function displayCompanies(companiesArray) {
+            companiesList.innerHTML = companiesArray.map(company => `
+                <div class="company">
+                    <div class="company-name">
+                        <img src="${company.logo}" alt="${company.name}" class="company-logo">
+                        ${company.name}
+                    </div>
+                    <button class="reveal-button" onclick="revealComplexity(event)">
+                        Reveal Complexity
+                        <span class="arrow">▼</span>
+                    </button>
+                    <div class="complexity-details">
+                        <div class="complexity-bar tooltip">
+                            <div class="complexity-bar-fill" style="width: ${company.complexity}%;"></div>
+                            <span class="tooltiptext">Complexity: ${company.complexity}%</span>
+                        </div>
+                        <div class="complexity-text">Complexity: ${company.complexity}% - ${company.description}</div>
+                        <div class="complexity-reason">${company.reason}</div>
+                    </div>
+                    <button class="select-job-button" onclick="selectJobRole('${company.name}')">Select Job Role in this Company</button>
+                </div>
+            `).join('');
+        }
+
+        // Initial display of companies
+        displayCompanies(companies[jobRole]);
+
+        // Reveal complexity details
+        function revealComplexity(event) {
+            event.stopPropagation(); // Prevent parent click event
+            const companyDiv = event.target.closest('.company');
+            const complexityDetails = companyDiv.querySelector('.complexity-details');
+            const revealButton = companyDiv.querySelector('.reveal-button');
+
+            // Toggle visibility
+            if (complexityDetails.style.display === 'block') {
+                complexityDetails.style.display = 'none';
+                revealButton.classList.remove('expanded');
+            } else {
+                complexityDetails.style.display = 'block';
+                revealButton.classList.add('expanded');
+            }
+        }
+
+        // Filter companies based on search input
+        function filterCompanies() {
+            const searchTerm = document.getElementById('searchBar').value.toLowerCase();
+            const filteredCompanies = companies[jobRole].filter(company => 
+                company.name.toLowerCase().includes(searchTerm)
+            );
+            displayCompanies(filteredCompanies);
+        }
+
+        // Sort companies by name or complexity
+        function sortCompanies(criteria) {
+            const sortedCompanies = [...companies[jobRole]];
+            if (criteria === 'name') {
+                sortedCompanies.sort((a, b) => a.name.localeCompare(b.name));
+            } else if (criteria === 'complexity') {
+                sortedCompanies.sort((a, b) => b.complexity - a.complexity);
+            }
+            displayCompanies(sortedCompanies);
+        }
+
+        // Redirect to job details page
+        function selectJobRole(company) {
+            window.location.href = `jobDetails.ejs?jobRole=${jobRole}&company=${company}`;
+        }
+    </script>
+</body>
+</html>

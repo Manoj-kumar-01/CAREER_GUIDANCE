@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0f0f0f, #141414);
+            color: #e5e5e5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Profile Card */
+        .profile-container {
+            width: 1000px;
+            background: rgba(20, 20, 20, 0.5); /* Semi-transparent black */
+            backdrop-filter: blur(10px); /* Glass effect */
+            border: 2px solid rgba(255, 255, 255, 0.1); /* Light border for contrast */
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0, 255, 204, 0.8), 0 0 50px rgba(0, 255, 204, 0.6); /* Glowing neon cyan drop shadow */
+            padding: 20px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Background Banner */
+        .background-banner {
+            height: 150px;
+            background: linear-gradient(90deg, #00ffcc, #005d5d); /* Neon cyan gradient */
+        }
+
+        /* Profile Photo and Bio */
+        .profile-details {
+            display: flex;
+            align-items: flex-start;
+            gap: 40px;
+            margin-top: -75px;
+            padding: 20px;
+        }
+
+        .profile-photo {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%; /* Rounded edges */
+            border: 5px solid #00ffcc; /* Neon cyan border */
+            box-shadow: 0 0 20px #00ffcc; /* Neon cyan glow */
+        }
+
+        .bio-section {
+            flex: 1;
+            color: #e5e5e5;
+        }
+
+        .bio-section h2 {
+            font-size: 32px; /* Increased font size */
+            font-family: 'Poppins', sans-serif; /* Better font */
+            color: #ffffff; /* White color for better visibility */
+            font-weight: 600; /* Bold text */
+            margin-top: -10px; /* Move slightly upward */
+        }
+
+        .bio-section p {
+            font-size: 16px;
+            color: #bbb;
+            margin-top: 5px;
+        }
+
+        .college {
+            position: absolute;
+            top: 150px;
+            right: 20px;
+            font-size: 20px; /* Increased font size */
+            font-family: 'Poppins', sans-serif; /* Better font */
+            color: #ffffff; /* White color for better visibility */
+            font-weight: 500; /* Medium text */
+            margin-top: -10px; /* Move slightly upward */
+        }
+
+        /* Skills and Interests Section */
+        .skills-interests {
+            margin: 20px;
+            display: flex;
+            gap: 30px;
+        }
+
+        .skills-interests div {
+            flex: 1;
+        }
+
+        .skills-interests h3 {
+            font-size: 18px;
+            color: #00ffcc; /* Neon cyan */
+            margin-bottom: 10px;
+        }
+
+        .list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .list div {
+            background: rgba(0, 255, 204, 0.1);
+            border: 1px solid #00ffcc; /* Neon cyan */
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-size: 14px;
+            color: #e5e5e5;
+            box-shadow: 0 0 10px #00ffcc; /* Neon cyan glow */
+            position: relative;
+        }
+
+        .list div .delete-skill {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff4d4d;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .list div:hover .delete-skill {
+            opacity: 1;
+        }
+
+        /* Input Section */
+        .input-section {
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+            margin: 20px;
+        }
+
+        input, button, textarea {
+            padding: 10px;
+            border: 1px solid #005d5d; /* Neon cyan */
+            border-radius: 5px;
+            font-size: 14px;
+            background: #1c1c1c;
+            color: #e5e5e5;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, textarea:focus {
+            border-color: #00ffcc; /* Neon cyan */
+            box-shadow: 0 0 5px #00ffcc;
+            outline: none;
+        }
+
+        button {
+            background: #00ffcc; /* Neon cyan */
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: #008080; /* Neon cyan hover */
+            color: white;
+            transform: scale(1.05);
+        }
+
+        /* Career Section */
+        .career-section {
+            margin: 20px;
+            padding: 20px;
+            background: rgba(0, 255, 204, 0.1); /* Neon cyan background */
+            border: 1px solid #00ffcc; /* Neon cyan */
+            border-radius: 10px;
+            box-shadow: 0 0 10px #00ffcc; /* Neon cyan glow */
+        }
+
+        .career-section h3 {
+            font-size: 18px;
+            color: #00ffcc; /* Neon cyan */
+            margin-bottom: 10px;
+        }
+
+        .career-section p {
+            font-size: 14px;
+            color: #bbb;
+            margin-top: 5px;
+        }
+
+        /* Animations */
+        @keyframes slide-down {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slide-up {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }
+
+        .visible {
+            display: flex;
+            animation: slide-down 0.5s ease;
+        }
+
+        .slide-up {
+            animation: slide-up 0.5s ease;
+            display: none;
+        }
+
+        /* Profile Picture Selection */
+        .profile-pic-selection {
+            margin-top: 20px;
+        }
+
+        .profile-pic-selection h3 {
+            font-size: 18px;
+            color: #00ffcc; /* Neon cyan */
+            margin-bottom: 10px;
+        }
+
+        .profile-pic-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); /* 5 columns */
+            gap: 10px;
+        }
+
+        .profile-pic-grid img {
+            width: 100%;
+            height: 100px;
+            border-radius: 50%;
+            border: 2px solid #00ffcc; /* Neon cyan border */
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .profile-pic-grid img:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 10px #00ffcc; /* Neon cyan glow */
+        }
+        .profile-pic-grid img.selected {
+    border: 3px solid #00ffcc; /* Neon cyan border */
+    box-shadow: 0 0 20px #00ffcc; /* Neon cyan glow */
+    transform: scale(1.1); /* Slightly enlarge the selected image */
+}
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <!-- Background Banner -->
+        <div class="background-banner"></div>
+
+        <!-- Profile Photo, Bio, and College -->
+        <div class="profile-details">
+            <img id="profilePhoto" src="default-profile-photo.jpg" alt="Profile Photo" class="profile-photo">
+            <div class="bio-section">
+                <h2 id="userName"><% user.username %></h2>
+                <p id="userBio">No bio available.</p>
+            </div>
+            <div class="college" id="userCollege">College not added</div>
+        </div>
+
+        <!-- Skills and Interests Section -->
+        <div class="skills-interests">
+            <div>
+                <h3>Skills</h3>
+                <div class="list" id="skillsList">
+                    <!-- Skills will be dynamically rendered -->
+                </div>
+            </div>
+            <div>
+                <h3>Interests</h3>
+                <div class="list" id="interestsList">
+                    <!-- Interests will be dynamically rendered -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Career Goals Section -->
+        <div class="career-section">
+            <h3>Career Goals</h3>
+            <p id="careerGoalText">No career goal added.</p>
+        </div>
+
+        <!-- Update Profile Button -->
+        <button class="update-btn" onclick="toggleInputSection()">Update Profile</button>
+
+        <!-- Input Section for General Profile Updates -->
+        <div class="input-section" id="inputSection">
+            <input type="text" id="nameInput" placeholder="Update Name">
+            <input type="text" id="bioInput" placeholder="Update Bio">
+            <input type="text" id="collegeInput" placeholder="Update College">
+            <input type="text" id="skillsInput" placeholder="Add new skills (comma-separated)">
+            <input type="text" id="interestsInput" placeholder="Add new interests (comma-separated)">
+            <textarea id="careerGoalInput" placeholder="Add your career goal"></textarea>
+        
+            <!-- Profile Picture Selection -->
+            <div class="profile-pic-selection">
+                <h3>Choose a Profile Picture</h3>
+                <div class="profile-pic-grid">
+                    <!-- Sample profile pictures -->
+                    <img src="images/profilePic1.png" alt="Profile Pic 1" onclick="selectProfilePic('profilePic1.png', event)">
+                    <img src="images/profilePic2.png" alt="Profile Pic 2" onclick="selectProfilePic('profilePic2.png', event)">
+                    <img src="images/profilePic3.png" alt="Profile Pic 3" onclick="selectProfilePic('profilePic3.png', event)">
+                    <img src="images/profilePic4.png" alt="Profile Pic 4" onclick="selectProfilePic('profilePic4.png', event)">
+                    <img src="images/profilePic5.png" alt="Profile Pic 5" onclick="selectProfilePic('profilePic5.png', event)">
+                    <img src="images/profilePic6.png" alt="Profile Pic 6" onclick="selectProfilePic('profilePic6.png', event)">
+                    <img src="images/profilePic1.png" alt="Profile Pic 7" onclick="selectProfilePic('profilePic1.png', event)">
+                    <img src="images/profilePic2.png" alt="Profile Pic 8" onclick="selectProfilePic('profilePic2.png', event)">
+                    <img src="images/profilePic3.png" alt="Profile Pic 9" onclick="selectProfilePic('profilePic3.png', event)">
+                    <img src="images/profilePic4.png" alt="Profile Pic 10" onclick="selectProfilePic('profilePic4.png', event)">
+                </div>
+            </div>
+        
+            <button onclick="updateUserProfile()">Save Changes</button>
+        </div>
+    </div>
+
+    <script>
+        // Fetch user profile data from the server
+        async function fetchUserProfile() {
+            try {
+                const response = await fetch('/getUserProfile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const data = await response.json();
+
+                console.log("Fetched Profile Data:", data); // Debugging
+
+                if (response.ok) {
+                   
+                    document.getElementById('userName').innerText = data.name || 'John Doe';
+                    document.getElementById('userBio').innerText = data.bio || "No bio available.";
+                    document.getElementById('userCollege').innerText = data.college || "College not added";
+                    document.getElementById('profilePhoto').src = data.profilePhoto || "default-profile-photo.jpg";
+                    document.getElementById('careerGoalText').innerText = data.careerGoal || "No career goal added.";
+
+                    
+                    const skillsList = document.getElementById('skillsList');
+                    skillsList.innerHTML = data.skills.map(skill => `
+                        <div>
+                            ${skill}
+                            <span class="delete-skill" onclick="deleteSkill('${skill}')">×</span>
+                        </div>
+                    `).join('');
+
+                    
+                    const interestsList = document.getElementById('interestsList');
+                    interestsList.innerHTML = data.interests.map(interest => `
+                        <div>
+                            ${interest}
+                            <span class="delete-skill" onclick="deleteInterest('${interest}')">×</span>
+                        </div>
+                    `).join('');
+                } else {
+                    console.error("Error fetching profile:", data.message);
+                }
+            } catch (error) {
+                console.error("Error fetching profile:", error);
+            }
+        }
+
+       
+        function toggleInputSection() {
+            const inputSection = document.getElementById('inputSection');
+            inputSection.classList.toggle('visible');
+        }
+
+        // Update user profile data
+        async function updateUserProfile() {
+            const name = document.getElementById('nameInput').value;
+            const bio = document.getElementById('bioInput').value;
+            const college = document.getElementById('collegeInput').value;
+            const skills = document.getElementById('skillsInput').value.split(',').map(skill => skill.trim());
+            const interests = document.getElementById('interestsInput').value.split(',').map(interest => interest.trim());
+            const careerGoal = document.getElementById('careerGoalInput').value;
+
+            const payload = {
+                name,
+                bio,
+                college,
+                skills,
+                interests,
+                careerGoal,
+                profilePhoto: selectedProfilePic || '/images/profilePic1.png' // Ensure this is included
+            };
+
+            console.log("Payload:", payload); // Debugging
+
+            try {
+                const response = await fetch('/updateProfile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert(data.message || "Profile updated successfully!");
+                    // Reload the page after a successful update
+                    window.location.reload();
+                } else {
+                    alert(data.message || "Error updating profile!");
+                }
+            } catch (error) {
+                console.error("Error updating profile:", error);
+                alert("An error occurred. Please try again.");
+            }
+        }
+
+       
+        async function deleteSkill(skill) {
+            try {
+                const response = await fetch('/deleteSkill', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ skill })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert(data.message || "Skill deleted successfully!");
+                    fetchUserProfile(); // Refresh profile data
+                } else {
+                    alert(data.message || "Error deleting skill!");
+                }
+            } catch (error) {
+                console.error("Error deleting skill:", error);
+                alert("An error occurred. Please try again.");
+            }
+        }
+
+        
+        async function deleteInterest(interest) {
+            try {
+                const response = await fetch('/deleteInterest', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ interest })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert(data.message || "Interest deleted successfully!");
+                    fetchUserProfile(); // Refresh profile data
+                } else {
+                    alert(data.message || "Error deleting interest!");
+                }
+            } catch (error) {
+                console.error("Error deleting interest:", error);
+                alert("An error occurred. Please try again.");
+            }
+        }
+
+        // Fetch profile data on page load
+        fetchUserProfile();
+
+        let selectedProfilePic = ''; // Store the selected profile picture
+        let previouslySelectedImage = null; // Track the previously selected image
+
+        function selectProfilePic(picName, event) {
+            // Remove the 'selected' class from the previously selected image
+            if (previouslySelectedImage) {
+                previouslySelectedImage.classList.remove('selected');
+            }
+
+            // Add the 'selected' class to the newly selected image
+            const selectedImage = event.target;
+            selectedImage.classList.add('selected');
+            previouslySelectedImage = selectedImage;
+
+            // Update the selected profile photo path
+            selectedProfilePic = `/images/${picName}`;
+            console.log("Selected Profile Picture:", selectedProfilePic); // Debugging
+
+            // Update the profile photo preview
+            document.getElementById('profilePhoto').src = selectedProfilePic;
+
+            // Send the selected profile photo to the backend
+            fetch('/updateProfile', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ profilePhoto: selectedProfilePic }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Profile picture updated successfully!');
+                    fetchUserProfile(); // Refresh profile data
+                } else {
+                    alert('Error updating profile picture.');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

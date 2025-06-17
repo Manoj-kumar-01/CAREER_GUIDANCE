@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Career Quiz</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #0f0f0f, #1a1a2e);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #ffffff;
+    }
+
+    .navbar {
+      background-color: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 20px #00fff7;
+    }
+
+    .navbar-brand {
+      color: #00fff7 !important;
+      font-weight: bold;
+    }
+
+    .quiz-container {
+      max-width: 850px;
+      margin: 60px auto;
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      box-shadow: 0 0 30px #00fff7;
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #00fff7;
+      margin-bottom: 30px;
+      font-weight: bold;
+    }
+
+    .question p {
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+
+    .form-check-input:checked {
+      background-color: #00fff7;
+      border-color: #00fff7;
+    }
+
+    .btn-primary {
+      background-color: #00fff7;
+      border: none;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      background-color: #00d1c0;
+    }
+
+    .result {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: rgba(0, 255, 247, 0.1);
+      border: 1px solid #00fff7;
+      border-radius: 10px;
+      box-shadow: 0 0 15px #00fff7;
+    }
+
+    .scrollable-content {
+      margin-top: 30px;
+      max-height: 300px;
+      overflow-y: auto;
+      padding: 20px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: inset 0 0 10px rgba(0, 255, 247, 0.2);
+    }
+
+    .career-card {
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      background-color: rgba(0, 255, 247, 0.08);
+      border: 1px solid #00fff7;
+    }
+
+    .career-card h5 {
+      color: #00fff7;
+      font-weight: bold;
+    }
+
+    .career-card .btn-secondary {
+      background-color: transparent;
+      border: 1px solid #00fff7;
+      color: #00fff7;
+      transition: all 0.3s ease;
+    }
+
+    .career-card .btn-secondary:hover {
+      background-color: #00fff7;
+      color: #000;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #00fff7;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Career Quiz</a>
+    </div>
+  </nav>
+
+  <div class="quiz-container">
+    <h2>Discover Your Ideal Career</h2>
+    <form id="careerQuiz">
+      <!-- Question 1 -->
+      <div class="question">
+        <p>1. What type of work environment do you prefer?</p>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q1" value="tech" required />
+          <label class="form-check-label">Tech-savvy and fast-paced</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q1" value="creative" />
+          <label class="form-check-label">Creative and flexible</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q1" value="structured" />
+          <label class="form-check-label">Structured and organized</label>
+        </div>
+      </div>
+
+      <!-- Question 2 -->
+      <div class="question">
+        <p>2. What are your favorite subjects or activities?</p>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q2" value="math" required />
+          <label class="form-check-label">Math and problem-solving</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q2" value="art" />
+          <label class="form-check-label">Art and design</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q2" value="science" />
+          <label class="form-check-label">Science and experiments</label>
+        </div>
+      </div>
+
+      <!-- Question 3 -->
+      <div class="question">
+        <p>3. How do you handle challenges?</p>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q3" value="analytical" required />
+          <label class="form-check-label">Analyze and find solutions</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q3" value="creative" />
+          <label class="form-check-label">Think outside the box</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q3" value="practical" />
+          <label class="form-check-label">Take practical steps</label>
+        </div>
+      </div>
+
+      <!-- Question 4 -->
+      <div class="question">
+        <p>4. What is your communication style?</p>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q4" value="direct" required />
+          <label class="form-check-label">Direct and to the point</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q4" value="persuasive" />
+          <label class="form-check-label">Persuasive and engaging</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q4" value="supportive" />
+          <label class="form-check-label">Supportive and empathetic</label>
+        </div>
+      </div>
+
+      <!-- Question 5 -->
+      <div class="question">
+        <p>5. What are your long-term career goals?</p>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q5" value="innovation" required />
+          <label class="form-check-label">Innovate and create new solutions</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q5" value="leadership" />
+          <label class="form-check-label">Lead and manage teams</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q5" value="helping" />
+          <label class="form-check-label">Help and support others</label>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100 mt-3">Submit Quiz</button>
+    </form>
+
+    <div class="result mt-4 d-none" id="quizResult">
+      <h4 class="text-center">Your Career Match</h4>
+      <p id="resultText"></p>
+    </div>
+
+    <div class="scrollable-content" id="careerDetails">
+      <!-- Career suggestions appear here -->
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("careerQuiz").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const q1 = document.querySelector('input[name="q1"]:checked').value;
+      const q2 = document.querySelector('input[name="q2"]:checked').value;
+      const q3 = document.querySelector('input[name="q3"]:checked').value;
+      const q4 = document.querySelector('input[name="q4"]:checked').value;
+      const q5 = document.querySelector('input[name="q5"]:checked').value;
+
+      let careers = [];
+
+      if (q1 === 'tech' && q2 === 'math' && q3 === 'analytical') {
+        careers = [
+          { title: 'Software Engineer', link: '/software-engineer' },
+          { title: 'Data Scientist', link: '/data-scientist' }
+        ];
+      } else if (q1 === 'creative' && q2 === 'art' && q3 === 'creative') {
+        careers = [
+          { title: 'Graphic Designer', link: '/graphic-designer' },
+          { title: 'Creative Writer', link: '/creative-writer' }
+        ];
+      } else if (q1 === 'structured' && q2 === 'science' && q3 === 'practical') {
+        careers = [
+          { title: 'Mechanical Engineer', link: '/mechanical-engineer' },
+          { title: 'Research Scientist', link: '/research-scientist' }
+        ];
+      } else if (q4 === 'persuasive' && q5 === 'leadership') {
+        careers = [
+          { title: 'Business Consultant', link: '/business-consultant' },
+          { title: 'Manager', link: '/manager' }
+        ];
+      } else if (q4 === 'supportive' && q5 === 'helping') {
+        careers = [
+          { title: 'Counselor', link: '/counselor' },
+          { title: 'Social Worker', link: '/social-worker' }
+        ];
+      } else {
+        careers = [
+          { title: 'Project Manager', link: '/project-manager' },
+          { title: 'Entrepreneur', link: '/entrepreneur' }
+        ];
+      }
+
+      document.getElementById("resultText").innerHTML = `You are best suited for careers in <strong>${careers.map(c => c.title).join('</strong> or <strong>')}</strong>.`;
+      document.getElementById("quizResult").classList.remove("d-none");
+
+      document.getElementById("careerDetails").innerHTML = careers
+        .map(
+          (career) => `
+            <div class="career-card">
+              <h5>${career.title}</h5>
+              <a href="${career.link}" class="btn btn-secondary mt-2">Learn More</a>
+            </div>
+          `
+        )
+        .join("");
+    });
+  </script>
+</body>
+</html>
