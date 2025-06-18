@@ -132,6 +132,11 @@ app.post('/selectProfilePic', (req, res) => {
     req.session.profilePhoto = profilePhoto;
     res.json({ success: true, profilePhoto });
 });
+// Example: For companiesHiring.ejs
+app.get('/companiesHiring', (req, res) => {
+    const jobRole = req.query.jobRole; // Access query param
+    res.render('companiesHiring', { jobRole }); // Render the EJS
+});
 
 app.post('/register', async (req, res) => {
     try {
