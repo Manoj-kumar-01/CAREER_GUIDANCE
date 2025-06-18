@@ -463,10 +463,12 @@
             displayCompanies(sortedCompanies);
         }
 
-        // Redirect to job details page
-        function selectJobRole(jobRole) {
-    window.location.href = `/nextPage?jobRole=${jobRole}&company=${company}`;
+        function selectJobRole(jobRole, company) {
+    const encodedRole = encodeURIComponent(jobRole);
+    const encodedCompany = encodeURIComponent(company);
+    window.location.href = `/jobDetails?jobRole=${encodedRole}&company=${encodedCompany}`;
 }
+
     </script>
 </body>
 </html>
