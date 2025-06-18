@@ -400,28 +400,38 @@
         // Display companies with complexity percentage
         const companiesList = document.getElementById('companiesList');
         function displayCompanies(companiesArray) {
-            companiesList.innerHTML = companiesArray.map(company => `
-                <div class="company">
-                    <div class="company-name">
-                        <img src="${company.logo}" alt="${company.name}" class="company-logo">
-                        ${company.name}
-                    </div>
-                    <button class="reveal-button" onclick="revealComplexity(event)">
-                        Reveal Complexity
-                        <span class="arrow">▼</span>
-                    </button>
-                    <div class="complexity-details">
-                        <div class="complexity-bar tooltip">
-                            <div class="complexity-bar-fill" style="width: ${company.complexity}%;"></div>
-                            <span class="tooltiptext">Complexity: ${company.complexity}%</span>
-                        </div>
-                        <div class="complexity-text">Complexity: ${company.complexity}% - ${company.description}</div>
-                        <div class="complexity-reason">${company.reason}</div>
-                    </div>
-                    <button class="select-job-button" onclick="selectJobRole('${company.name}')">Select Job Role in this Company</button>
+    companiesList.innerHTML = companiesArray.map(company => `
+        <div class="company">
+            <div class="company-name">
+                <img src="${company.logo}" alt="${company.name}" class="company-logo">
+                ${company.name}
+            </div>
+
+            <button class="reveal-button" onclick="revealComplexity(event)">
+                Reveal Complexity
+                <span class="arrow">▼</span>
+            </button>
+
+            <div class="complexity-details">
+                <div class="complexity-bar tooltip">
+                    <div class="complexity-bar-fill" style="width: ${company.complexity}%"></div>
+                    <span class="tooltiptext">Complexity: ${company.complexity}%</span>
                 </div>
-            `).join('');
-        }
+                <div class="complexity-text">
+                    Complexity: ${company.complexity}% – ${company.description}
+                </div>
+                <div class="complexity-reason">${company.reason}</div>
+            </div>
+
+            <!-- ✅ pass both jobRole and company -->
+            <button class="select-job-button"
+                    onclick="selectJobRole('${jobRole}', '${company.name}')">
+                Select Job Role in this Company
+            </button>
+        </div>
+    `).join('');
+}
+
 
         // Initial display of companies
         displayCompanies(companies[jobRole]);
