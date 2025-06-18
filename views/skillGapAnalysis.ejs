@@ -1,159 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Skill Gap Analysis</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: #f4f4f9;
-            color: #333;
-            padding: 20px;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        h1, h2 { color: #0056b3; }
-        .section   { margin: 20px 0;   }
-        .skills-list{ margin: 10px 0;  }
-        .skill-item { margin: 10px 0; padding: 10px; background: #e9ecef; border-radius: 5px; }
-        .skill-item label { margin-left: 10px; }
-        .resources div { margin: 10px 0; }
-        .resources a { color: #0056b3; text-decoration: none; }
-        .resources a:hover { text-decoration: underline; }
-        button { background: #0056b3; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
-        button:hover { background: #004494; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Skill Gap Analysis</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f4f4f9;
+      color: #333;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h1, h2 {
+      color: #0056b3;
+    }
+    .section {
+      margin: 20px 0;
+    }
+    .skills-list {
+      margin: 10px 0;
+    }
+    .skill-item {
+      margin: 10px 0;
+      padding: 10px;
+      background: #e9ecef;
+      border-radius: 5px;
+    }
+    .skill-item label {
+      margin-left: 10px;
+    }
+    .resources {
+      margin: 20px 0;
+    }
+    .resources div {
+      margin: 10px 0;
+    }
+    .resources a {
+      color: #0056b3;
+      text-decoration: none;
+    }
+    .resources a:hover {
+      text-decoration: underline;
+    }
+    button {
+      background: #0056b3;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #004494;
+    }
+    #errorMessage {
+      color: red;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Skill Gap Analysis for <span id="companyName"></span></h1>
+  <div class="container" id="mainContainer">
+    <h1>Skill Gap Analysis for <span id="companyName"></span></h1>
 
-        <!-- Skills List -->
-        <div class="section">
-            <h2>Select Skills You Already Know</h2>
-            <div class="skills-list" id="skillsList"></div>
-            <button onclick="calculateSkillGap()">Calculate Skill Gap</button>
-        </div>
+    <div id="errorMessage"></div>
 
-        <!-- Skill Gap Result -->
-        <div class="section" id="skillGapResult" style="display:none;">
-            <h2>Skills to Learn</h2>
-            <div id="skillsToLearn"></div>
-        </div>
-
-        <button onclick="redirectToFinalAssessment()">Proceed to Final Assessment</button>
+    <!-- Skills List -->
+    <div class="section" id="skillsSection">
+      <h2>Select Skills You Already Know</h2>
+      <div class="skills-list" id="skillsList"></div>
+      <button onclick="calculateSkillGap()">Calculate Skill Gap</button>
     </div>
 
-<script>
-/* ------------------------------------------------------------------ */
-/* 1. Read parameters                                                 */
-/* ------------------------------------------------------------------ */
-const urlParams = new URLSearchParams(window.location.search);
-const jobRole  = urlParams.get('jobRole');
-const company  = urlParams.get('company');
-document.getElementById('companyName').innerText = company;
+    <!-- Skill Gap Result -->
+    <div class="section" id="skillGapResult" style="display: none;">
+      <h2>Skills to Learn</h2>
+      <div id="skillsToLearn"></div>
+    </div>
 
-/* ------------------------------------------------------------------ */
-/* 2. Skills data                                                     */
-/* ------------------------------------------------------------------ */
-const skillsData = {
-    ai_ml_engineer: [
-        { skill:"Python Programming",level:"Basic",timeToLearn:"1 month",
-          freeResources:["https://www.learnpython.org/","https://www.codecademy.com/learn/learn-python-3"],
-          paidResources:["https://www.udemy.com/course/python-for-data-science-and-machine-learning-bootcamp/"]},
-        { skill:"Machine Learning Basics",level:"Intermediate",timeToLearn:"2 months",
-          freeResources:["https://www.coursera.org/learn/machine-learning"],
-          paidResources:["https://www.udemy.com/course/machinelearning/"]},
-        { skill:"Deep Learning (TensorFlow/PyTorch)",level:"Advanced",timeToLearn:"3 months",
-          freeResources:["https://www.tensorflow.org/tutorials","https://www.coursera.org/specializations/deep-learning"],
-          paidResources:["https://www.udemy.com/course/deeplearning/"]},
-        { skill:"Mathematics for ML (Linear Algebra, Calculus)",level:"Intermediate",timeToLearn:"1.5 months",
-          freeResources:["https://www.khanacademy.org/math/linear-algebra"],
-          paidResources:["https://www.udemy.com/course/linear-algebra-theory-and-implementation/"]},
-        { skill:"Natural Language Processing (NLP)",level:"Advanced",timeToLearn:"2 months",
-          freeResources:["https://www.coursera.org/specializations/natural-language-processing"],
-          paidResources:["https://www.udemy.com/course/natural-language-processing-with-python/"]},
-        { skill:"Computer Vision",level:"Advanced",timeToLearn:"2 months",
-          freeResources:["https://www.coursera.org/specializations/computer-vision"],
-          paidResources:["https://www.udemy.com/course/computer-vision-with-python/"]},
-        { skill:"Cloud Computing (AWS/GCP/Azure)",level:"Intermediate",timeToLearn:"2 months",
-          freeResources:["https://aws.amazon.com/training/","https://cloud.google.com/training"],
-          paidResources:["https://www.udemy.com/course/aws-certified-solutions-architect-associate/"]}
-    ],
-    /* --- other roles omitted for brevity (unchanged) --------------- */
-    /* ... ai_research_scientist, data_scientist, ai_ethics_specialist,
-       robotics_engineer ...                                          */
-};
+    <button onclick="redirectToFinalAssessment()">Proceed to Final Assessment</button>
+  </div>
 
-/* ------------------------------------------------------------------ */
-/* 3. Validate jobRole before using                                   */
-/* ------------------------------------------------------------------ */
-const skillsListDiv = document.getElementById('skillsList');
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const jobRole = urlParams.get('jobRole');
+    const company = urlParams.get('company');
 
-if (!jobRole || !skillsData[jobRole]) {
-    skillsListDiv.innerHTML =
-        `<p style="color:red;">Invalid or missing job role.
-         Please go back and select a valid job.</p>`;
-} else {
-    /* -------------------------------------------------------------- */
-    /* 4. Render skill check‑boxes                                    */
-    /* -------------------------------------------------------------- */
-    skillsData[jobRole].forEach(skill => {
-        skillsListDiv.innerHTML += `
-            <div class="skill-item">
-                <input type="checkbox" id="${skill.skill}" name="skills" value="${skill.skill}">
-                <label for="${skill.skill}">${skill.skill} (${skill.level})</label>
-            </div>`;
-    });
-}
+    document.getElementById('companyName').innerText = company;
 
-/* ------------------------------------------------------------------ */
-/* 5. Compute & display gaps                                          */
-/* ------------------------------------------------------------------ */
-function calculateSkillGap() {
-    if (!jobRole || !skillsData[jobRole]) return;      // guard again
+    const skillsData = {
+      ai_ml_engineer: [
+        { skill: "Python Programming", level: "Basic", timeToLearn: "1 month", freeResources: ["https://www.learnpython.org/", "https://www.codecademy.com/learn/learn-python-3"], paidResources: ["https://www.udemy.com/course/python-for-data-science-and-machine-learning-bootcamp/"] },
+        { skill: "Machine Learning Basics", level: "Intermediate", timeToLearn: "2 months", freeResources: ["https://www.coursera.org/learn/machine-learning"], paidResources: ["https://www.udemy.com/course/machinelearning/"] },
+        { skill: "Deep Learning (TensorFlow/PyTorch)", level: "Advanced", timeToLearn: "3 months", freeResources: ["https://www.tensorflow.org/tutorials", "https://www.coursera.org/specializations/deep-learning"], paidResources: ["https://www.udemy.com/course/deeplearning/"] },
+        { skill: "Mathematics for ML (Linear Algebra, Calculus)", level: "Intermediate", timeToLearn: "1.5 months", freeResources: ["https://www.khanacademy.org/math/linear-algebra"], paidResources: ["https://www.udemy.com/course/linear-algebra-theory-and-implementation/"] },
+        { skill: "Natural Language Processing (NLP)", level: "Advanced", timeToLearn: "2 months", freeResources: ["https://www.coursera.org/specializations/natural-language-processing"], paidResources: ["https://www.udemy.com/course/natural-language-processing-with-python/"] },
+        { skill: "Computer Vision", level: "Advanced", timeToLearn: "2 months", freeResources: ["https://www.coursera.org/specializations/computer-vision"], paidResources: ["https://www.udemy.com/course/computer-vision-with-python/"] },
+        { skill: "Cloud Computing (AWS/GCP/Azure)", level: "Intermediate", timeToLearn: "2 months", freeResources: ["https://aws.amazon.com/training/", "https://cloud.google.com/training"], paidResources: ["https://www.udemy.com/course/aws-certified-solutions-architect-associate/"] }
+      ],
+      // Include other job roles here...
+    };
 
-    const selected = Array.from(
-        document.querySelectorAll('input[name="skills"]:checked')
-    ).map(el => el.value);
+    const mainContainer = document.getElementById('mainContainer');
+    const errorMessage = document.getElementById('errorMessage');
+    const skillsSection = document.getElementById('skillsSection');
 
-    const missing = skillsData[jobRole].filter(s => !selected.includes(s.skill));
+    if (!jobRole || !company || !skillsData[jobRole]) {
+      errorMessage.innerText = "Invalid or missing job role. Please go back and select a valid job.";
+      skillsSection.style.display = 'none';
+    } else {
+      const skillsList = document.getElementById('skillsList');
+      skillsData[jobRole].forEach(skill => {
+        skillsList.innerHTML += `
+          <div class="skill-item">
+            <input type="checkbox" id="${skill.skill}" name="skills" value="${skill.skill}">
+            <label for="${skill.skill}">${skill.skill} (${skill.level})</label>
+          </div>
+        `;
+      });
+    }
 
-    const out = missing.map(s => `
+    function calculateSkillGap() {
+      const selectedSkills = Array.from(document.querySelectorAll('input[name="skills"]:checked')).map(skill => skill.value);
+      const skillsToLearn = skillsData[jobRole].filter(skill => !selectedSkills.includes(skill.skill));
+      const skillsToLearnDiv = document.getElementById('skillsToLearn');
+      skillsToLearnDiv.innerHTML = skillsToLearn.map(skill => `
         <div class="skill-item">
-            <h3>${s.skill} (${s.level})</h3>
-            <p><strong>Time to Learn:</strong> ${s.timeToLearn}</p>
-            <div class="resources">
-                <div><strong>Free Resources:</strong><ul>
-                    ${s.freeResources.map(l => `<li><a href="${l}" target="_blank">${l}</a></li>`).join('')}
-                </ul></div>
-                <div><strong>Paid Resources:</strong><ul>
-                    ${s.paidResources.map(l => `<li><a href="${l}" target="_blank">${l}</a></li>`).join('')}
-                </ul></div>
+          <h3>${skill.skill} (${skill.level})</h3>
+          <p><strong>Time to Learn:</strong> ${skill.timeToLearn}</p>
+          <div class="resources">
+            <div>
+              <strong>Free Resources:</strong>
+              <ul>
+                ${skill.freeResources.map(link => `<li><a href="${link}" target="_blank">${link}</a></li>`).join('')}
+              </ul>
             </div>
+            <div>
+              <strong>Paid Resources:</strong>
+              <ul>
+                ${skill.paidResources.map(link => `<li><a href="${link}" target="_blank">${link}</a></li>`).join('')}
+              </ul>
+            </div>
+          </div>
         </div>
-    `).join('');
+      `).join('');
+      document.getElementById('skillGapResult').style.display = 'block';
+    }
 
-    document.getElementById('skillsToLearn').innerHTML = out;
-    document.getElementById('skillGapResult').style.display = 'block';
-}
-
-/* ------------------------------------------------------------------ */
-/* 6. Redirect to final assessment                                    */
-/* ------------------------------------------------------------------ */
-function redirectToFinalAssessment() {
-    const encodedRole = encodeURIComponent(jobRole || '');
-    const encodedComp = encodeURIComponent(company || '');
-    window.location.href = `/page5?jobRole=${encodedRole}&company=${encodedComp}`;
-}
-</script>
+    function redirectToFinalAssessment() {
+      const encodedRole = encodeURIComponent(jobRole);
+      const encodedCompany = encodeURIComponent(company);
+      window.location.href = `/page5?jobRole=${encodedRole}&company=${encodedCompany}`;
+    }
+  </script>
 </body>
 </html>
