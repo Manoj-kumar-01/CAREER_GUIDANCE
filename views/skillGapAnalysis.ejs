@@ -261,8 +261,9 @@ function calculateSkillGap() {
 function redirectToFinalAssessment() {
     const encodedRole = encodeURIComponent(jobRole ?? '');
     const encodedComp = encodeURIComponent(company ?? '');
-    window.location.href = `/page5.ejs?jobRole=${encodedRole}&company=${encodedComp}`;
+    window.location.href = `/finalAssessment?jobRole=${encodedRole}&company=${encodedComp}`;
 }
+
 </script>
 </body>
 </html>
