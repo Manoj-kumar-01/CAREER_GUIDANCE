@@ -183,12 +183,11 @@
             document.getElementById('skillGapResult').style.display = 'block';
         }
 
-        // Redirect to Final Assessment
-      function redirectToFinalAssessment(jobRole, company) {
+       function redirectToFinalAssessment(jobRole, company) {
     const encodedRole = encodeURIComponent(jobRole);
     const encodedCompany = encodeURIComponent(company);
 
-    window.location.href = `/views/page5.ejs?jobRole=${encodedRole}&company=${encodedCompany}`;
+    window.location.href = `/page5?jobRole=${encodedRole}&company=${encodedCompany}`;
 }
 
     </script>
