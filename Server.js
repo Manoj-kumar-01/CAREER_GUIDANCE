@@ -120,6 +120,12 @@ app.get('/jobRoleSelection', (req, res) => {
     const branch = req.query.branch;
     res.render('jobRoleSelection', { branch }); // renders jobRoleSelection.ejs
 });
+
+app.get('/companiesHiring', (req, res) => {
+    const jobRole = req.query.jobRole;
+    res.render('companiesHiring', { jobRole });
+});
+
 app.post('/selectProfilePic', (req, res) => {
     const { profilePhoto } = req.body; 
     
