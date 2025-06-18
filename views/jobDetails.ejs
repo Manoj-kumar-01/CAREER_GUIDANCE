@@ -3,1391 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Details</title>
+    <title>Skill Gap Analysis</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        /* Dark Theme Styles */
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: #121212; 
-            color: #e0e0e0; /* Light text */
-            padding: 20px;
+        body{
+            font-family:'Poppins',sans-serif;
+            background:#f4f4f9;
+            color:#333;
+            padding:20px;
         }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: #1e1e1e; /* Dark container */
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            position: relative;
+        .container{
+            max-width:800px;
+            margin:0 auto;
+            background:#fff;
+            padding:20px;
+            border-radius:10px;
+            box-shadow:0 0 10px rgba(0,0,0,.1);
         }
-        h1, h2 {
-            color: #bb86fc; /* Purple accent */
+        h1,h2{color:#0056b3}
+        .section{margin:20px 0}
+        .skills-list{margin:10px 0}
+        .skill-item{
+            margin:10px 0;
+            padding:10px;
+            background:#e9ecef;
+            border-radius:5px;
         }
-        .section {
-            margin: 20px 0;
-            padding: 20px;
-            background: #2c2c2c; /* Darker background for sections */
-            border-radius: 10px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        .skill-item label{margin-left:10px}
+        .resources{margin:20px 0}
+        .resources div{margin:10px 0}
+        .resources a{
+            color:#0056b3;
+            text-decoration:none;
         }
-        .section:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        .resources a:hover{text-decoration:underline}
+        button{
+            background:#0056b3;
+            color:#fff;
+            border:none;
+            padding:10px 20px;
+            border-radius:5px;
+            cursor:pointer;
         }
-        .section p, .section ul {
-            margin: 10px 0;
-        }
-        .section ul {
-            padding-left: 20px;
-        }
-        .section ul li {
-            margin: 10px 0;
-        }
-        button {
-            background: #bb86fc; /* Purple accent */
-            color: #121212; /* Dark text */
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-        button:hover {
-            background: #9a67ea; /* Lighter purple on hover */
-        }
-        .notification-sidebar {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #2c2c2c;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            width: 300px;
-            z-index: 1000;
-        }
-        .notification-sidebar h3 {
-            color: #bb86fc;
-            margin-bottom: 10px;
-        }
-        .notification-sidebar ul {
-            list-style: none;
-            padding: 0;
-        }
-        .notification-sidebar ul li {
-            margin: 10px 0;
-            color: #e0e0e0;
-        }
-        .notification-sidebar ul li::before {
-            content: "•";
-            color: #bb86fc;
-            margin-right: 10px;
-        }
+        button:hover{background:#004494}
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Job Details at <span id="companyName"></span></h1>
-        
-        <!-- Role Overview -->
+        <h1>Skill Gap Analysis for <span id="companyName"></span></h1>
+
+        <!-- Skills List -->
         <div class="section">
-            <h2>Role Overview</h2>
-            <p id="roleOverview"></p>
+            <h2>Select Skills You Already Know</h2>
+            <div class="skills-list" id="skillsList"></div>
+            <button onclick="calculateSkillGap()">Calculate Skill Gap</button>
         </div>
 
-        <!-- Detailed Working -->
-        <div class="section">
-            <h2>Detailed Working</h2>
-            <p id="detailedWorking"></p>
+        <!-- Skill Gap Result -->
+        <div class="section" id="skillGapResult" style="display:none;">
+            <h2>Skills to Learn</h2>
+            <div id="skillsToLearn"></div>
         </div>
 
-        <!-- Eligibility Criteria -->
-        <div class="section">
-            <h2>Eligibility Criteria</h2>
-            <ul id="eligibilityCriteria"></ul>
-        </div>
-
-        <!-- Skills Required -->
-        <div class="section">
-            <h2>Skills Required</h2>
-            <ul id="skillsRequired"></ul>
-        </div>
-
-        <!-- Real-Life Examples -->
-        <div class="section">
-            <h2>Real-Life Examples</h2>
-            <ul id="realLifeExamples"></ul>
-        </div>
-
-        <!-- Proceed to Skill Gap Analysis -->
-        <button onclick="redirectToSkillGap()">Proceed to Skill Gap Analysis</button>
+        <button onclick="redirectToFinalAssessment()">Proceed to Final Assessment</button>
     </div>
 
-    <!-- Notification Sidebar -->
-    <div class="notification-sidebar">
-        <h3>Tips & Updates</h3>
-        <ul>
-            <li>Complete your profile to get personalized recommendations.</li>
-            <li>Check out our blog for the latest AI/ML trends.</li>
-            <li>Join our community to connect with experts.</li>
-        </ul>
-    </div>
+<script>
+/* ------------------ 1. Read and normalise query params ------------------ */
+const urlParams = new URLSearchParams(window.location.search);
+let jobRole  = urlParams.get('jobRole');
+const company = urlParams.get('company');
 
-    <script>
-        // Fetch job role and company from URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const jobRole = urlParams.get('jobRole')?.trim(); // Trim extra spaces
-        const company = urlParams.get('company')?.trim(); // Trim extra spaces
-
-        // Debugging: Log the fetched parameters
-        console.log("Company:", company);
-        console.log("Job Role:", jobRole);
-
-        // Display company name
-        document.getElementById('companyName').innerText = company || "Unknown Company";
-
-        // Job details data (fetch from backend or hardcode for now)
-        const jobDetails = {
-    Amazon: {
-        ai_ml_engineer: {
-            roleOverview: `
-                As an AI/ML Engineer at Amazon, you will work on cutting-edge projects like Alexa, Amazon Go, and AWS AI services. 
-                You will focus on developing scalable and efficient AI solutions that solve real-world problems. 
-                This role requires a strong foundation in machine learning, cloud computing, and software engineering.
-            `,
-            detailedWorking: `
-                AI/ML Engineers at Amazon work on projects that impact millions of users daily. Key responsibilities include:
-                <ul>
-                    <li>Developing machine learning models for large-scale datasets.</li>
-                    <li>Collaborating with cross-functional teams to integrate AI solutions.</li>
-                    <li>Optimizing models for performance and scalability on AWS.</li>
-                    <li>Conducting research to improve existing algorithms and develop new ones.</li>
-                    <li>Deploying models in production environments and monitoring their performance.</li>
-                </ul>
-            `,
-            eligibilityCriteria: [
-                "Bachelor's or Master's degree in Computer Science, AI, or a related field.",
-                "Strong knowledge of Python, TensorFlow, and PyTorch.",
-                "Experience in building and deploying scalable ML models.",
-                "Familiarity with AWS AI/ML services like SageMaker and Lambda.",
-                "Excellent problem-solving and analytical skills."
-            ],
-            skillsRequired: [
-                {
-                    skill: "Python",
-                    description: [
-                        "Proficiency in Python programming for data analysis and model development.",
-                        "Experience with libraries like NumPy, Pandas, and Scikit-learn.",
-                        "Knowledge of object-oriented programming and debugging."
-                    ]
-                },
-                {
-                    skill: "TensorFlow",
-                    description: [
-                        "Experience in building and training deep learning models using TensorFlow.",
-                        "Understanding of TensorFlow's computational graph and session management.",
-                        "Familiarity with TensorFlow Extended (TFX) for production pipelines."
-                    ]
-                },
-                {
-                    skill: "AWS",
-                    description: [
-                        "Experience in deploying and managing models on AWS AI/ML services.",
-                        "Understanding of AWS SageMaker, Lambda, and EC2.",
-                        "Knowledge of cloud-based data storage and processing tools."
-                    ]
-                }
-            ],
-            realLifeExamples: [
-                "Developed a recommendation system for Amazon that improved user engagement by 20%.",
-                "Built a fraud detection model for Amazon Pay that reduced false positives by 15%.",
-                "Created a computer vision model for Amazon Go that improved object detection accuracy by 10%."
-            ]
-        },
-        robotics_engineer: {
-            roleOverview: `
-                As a Robotics Engineer at Amazon, you will design and develop robots for various applications. 
-                You will work on hardware, software, and AI integration to create intelligent machines.
-            `,
-            detailedWorking: `
-                Robotics Engineers at Amazon work on cutting-edge projects like autonomous systems and robotics platforms. Key responsibilities include:
-                <ul>
-                    <li>Designing and building robotic systems.</li>
-                    <li>Developing algorithms for perception, planning, and control.</li>
-                    <li>Integrating AI and machine learning into robotic systems.</li>
-                    <li>Testing and optimizing robots for real-world applications.</li>
-                </ul>
-            `,
-            eligibilityCriteria: [
-                "Bachelor's or Master's degree in Robotics, Computer Science, or a related field.",
-                "Strong knowledge of C++, Python, and ROS.",
-                "Experience in robotics hardware and software development.",
-                "Familiarity with AI and machine learning techniques."
-            ],
-            skillsRequired: [
-                {
-                    skill: "Robotics Hardware",
-                    description: [
-                        "Proficiency in designing and building robotic systems.",
-                        "Experience with sensors, actuators, and control systems.",
-                        "Knowledge of mechanical and electrical engineering principles."
-                    ]
-                },
-                {
-                    skill: "Robotics Software",
-                    description: [
-                        "Experience in developing algorithms for perception, planning, and control.",
-                        "Familiarity with ROS (Robot Operating System).",
-                        "Strong programming skills in C++ and Python."
-                    ]
-                },
-                {
-                    skill: "AI Integration",
-                    description: [
-                        "Ability to integrate AI and machine learning into robotic systems.",
-                        "Experience in computer vision and sensor fusion.",
-                        "Knowledge of reinforcement learning and autonomous navigation."
-                    ]
-                }
-            ],
-            realLifeExamples: [
-                "Developed a robotic arm for Amazon's warehouse automation projects.",
-                "Built an autonomous drone for Amazon's delivery initiatives.",
-                "Created a robotic assistant for Amazon's healthcare solutions."
-            ]
-        }
-    },
-    OpenAI: {
-        ai_ml_engineer: {
-            roleOverview: `
-                As an AI/ML Engineer at OpenAI, you will work on groundbreaking projects like GPT, DALL-E, and reinforcement learning systems. 
-                You will focus on developing scalable and efficient AI solutions that push the boundaries of technology. 
-                This role requires a strong foundation in machine learning, deep learning, and software engineering.
-            `,
-            detailedWorking: `
-                AI/ML Engineers at OpenAI work on cutting-edge projects that advance the field of AI. Key responsibilities include:
-                <ul>
-                    <li>Developing machine learning models for large-scale datasets.</li>
-                    <li>Collaborating with researchers to implement state-of-the-art AI techniques.</li>
-                    <li>Optimizing models for performance and scalability.</li>
-                    <li>Conducting research to improve existing algorithms and develop new ones.</li>
-                    <li>Deploying models in production environments and monitoring their performance.</li>
-                </ul>
-            `,
-            eligibilityCriteria: [
-                "Bachelor's or Master's degree in Computer Science, AI, or a related field.",
-                "Strong knowledge of Python, TensorFlow, and PyTorch.",
-                "Experience in building and deploying scalable ML models.",
-                "Familiarity with reinforcement learning and generative models.",
-                "Excellent problem-solving and analytical skills."
-            ],
-            skillsRequired: [
-                {
-                    skill: "Python",
-                    description: [
-                        "Proficiency in Python programming for data analysis and model development.",
-                        "Experience with libraries like NumPy, Pandas, and Scikit-learn.",
-                        "Knowledge of object-oriented programming and debugging."
-                    ]
-                },
-                {
-                    skill: "TensorFlow",
-                    description: [
-                        "Experience in building and training deep learning models using TensorFlow.",
-                        "Understanding of TensorFlow's computational graph and session management.",
-                        "Familiarity with TensorFlow Extended (TFX) for production pipelines."
-                    ]
-                },
-                {
-                    skill: "Reinforcement Learning",
-                    description: [
-                        "Experience in developing reinforcement learning models.",
-                        "Understanding of algorithms like Q-learning and policy gradients.",
-                        "Knowledge of OpenAI Gym and other RL frameworks."
-                    ]
-                }
-            ],
-            realLifeExamples: [
-                "Developed a reinforcement learning model for OpenAI's robotics projects.",
-                "Built a generative model for DALL-E that improved image synthesis quality by 10%.",
-                "Created a natural language processing model for GPT that improved text generation accuracy by 15%."
-            ]
-        }
-    },
-    NVIDIA: {
-        ai_ml_engineer: {
-            roleOverview: `
-                As an AI/ML Engineer at NVIDIA, you will work on cutting-edge projects like autonomous vehicles, deep learning frameworks, and GPU-accelerated AI. 
-                You will focus on developing scalable and efficient AI solutions that solve real-world problems. 
-                This role requires a strong foundation in machine learning, deep learning, and GPU programming.
-            `,
-            detailedWorking: `
-                AI/ML Engineers at NVIDIA work on projects that impact millions of users daily. Key responsibilities include:
-                <ul>
-                    <li>Developing machine learning models for large-scale datasets.</li>
-                    <li>Collaborating with cross-functional teams to integrate AI solutions.</li>
-                    <li>Optimizing models for performance and scalability on NVIDIA GPUs.</li>
-                    <li>Conducting research to improve existing algorithms and develop new ones.</li>
-                    <li>Deploying models in production environments and monitoring their performance.</li>
-                </ul>
-            `,
-            eligibilityCriteria: [
-                "Bachelor's or Master's degree in Computer Science, AI, or a related field.",
-                "Strong knowledge of Python, TensorFlow, and PyTorch.",
-                "Experience in building and deploying scalable ML models.",
-                "Familiarity with CUDA and GPU-accelerated computing.",
-                "Excellent problem-solving and analytical skills."
-            ],
-            skillsRequired: [
-                {
-                    skill: "Python",
-                    description: [
-                        "Proficiency in Python programming for data analysis and model development.",
-                        "Experience with libraries like NumPy, Pandas, and Scikit-learn.",
-                        "Knowledge of object-oriented programming and debugging."
-                    ]
-                },
-                {
-                    skill: "TensorFlow",
-                    description: [
-                        "Experience in building and training deep learning models using TensorFlow.",
-                        "Understanding of TensorFlow's computational graph and session management.",
-                        "Familiarity with TensorFlow Extended (TFX) for production pipelines."
-                    ]
-                },
-                {
-                    skill: "CUDA",
-                    description: [
-                        "Experience in GPU-accelerated computing using CUDA.",
-                        "Understanding of parallel computing and optimization techniques.",
-                        "Knowledge of NVIDIA's deep learning frameworks like cuDNN and TensorRT."
-                    ]
-                }
-            ],
-            realLifeExamples: [
-                "Developed a computer vision model for NVIDIA's autonomous driving projects.",
-                "Built a deep learning framework for NVIDIA GPUs that improved training speed by 20%.",
-                "Created a GPU-accelerated AI model for NVIDIA's healthcare solutions."
-            ]
-        }
-    },
-    Google: {
-        ai_ml_engineer: {
-            roleOverview: `
-                As an AI/ML Engineer at Google, you will be at the forefront of innovation, working on projects like Google Search, Google Photos, and Google Translate. 
-                You will design and implement machine learning models that power some of the most widely used applications in the world. 
-                This role requires a deep understanding of algorithms, data structures, and scalable systems.
-            `,
-            detailedWorking: `
-                AI/ML Engineers at Google work on cutting-edge projects that impact millions of users daily. Key responsibilities include:
-                <ul>
-                    <li>Developing machine learning models for large-scale datasets.</li>
-                    <li>Collaborating with cross-functional teams to integrate AI solutions.</li>
-                    <li>Optimizing models for performance and scalability.</li>
-                    <li>Conducting research to improve existing algorithms and develop new ones.</li>
-                    <li>Deploying models in production environments and monitoring their performance.</li>
-                </ul>
-            `,
-            eligibilityCriteria: [
-                "Bachelor's or Master's degree in Computer Science, AI, or a related field.",
-                "Strong knowledge of Python, TensorFlow, and PyTorch.",
-                "Experience in building and deploying scalable ML models.",
-                "Familiarity with cloud platforms like Google Cloud Platform (GCP).",
-                "Excellent problem-solving and analytical skills."
-            ],
-            skillsRequired: [
-                {
-                    skill: "Python",
-                    description: [
-                        "Proficiency in Python programming for data analysis and model development.",
-                        "Experience with libraries like NumPy, Pandas, and Scikit-learn.",
-                        "Knowledge of object-oriented programming and debugging."
-                    ]
-                },
-                {
-                    skill: "TensorFlow",
-                    description: [
-                        "Experience in building and training deep learning models using TensorFlow.",
-                        "Understanding of TensorFlow's computational graph and session management.",
-                        "Familiarity with TensorFlow Extended (TFX) for production pipelines."
-                    ]
-                },
-                {
-                    skill: "Communication",
-                    description: [
-                        "Ability to explain complex technical concepts to non-technical stakeholders.",
-                        "Experience in writing clear and concise documentation.",
-                        "Strong presentation and interpersonal skills."
-                    ]
-                }
-            ],
-            realLifeExamples: [
-                "Developed a recommendation system for YouTube that improved user engagement by 20%.",
-                "Built a fraud detection model for Google Pay that reduced false positives by 15%.",
-                "Created a computer vision model for Google Photos that improved image tagging accuracy by 10%."
-            ]
-        },
-        ai_research_scientist: {
-            roleOverview: `
-                As an AI Research Scientist at Google, you will conduct groundbreaking research in artificial intelligence. 
-                You will focus on areas like reinforcement learning, generative models, and AI ethics to push the boundaries of technology.
-            `,
-            detailedWorking: `
-                AI Research Scientists at Google work on innovative projects that advance the field of AI. Key responsibilities include:
-                <ul>
-                    <li>Conducting research in machine learning, deep learning, and AI ethics.</li>
-                    <li>Publishing papers in top-tier conferences and journals.</li>
-                    <li>Collaborating with engineers to implement research findings into products.</li>
-                    <li>Mentoring junior researchers and interns.</li>
-                </ul>
-            `,
-            eligibilityCriteria: [
-                "Ph.D. in Computer Science, AI, or a related field.",
-                "Strong publication record in top AI conferences.",
-                "Experience in deep learning frameworks like TensorFlow and PyTorch.",
-                "Excellent problem-solving and analytical skills."
-            ],
-            skillsRequired: [
-                {
-                    skill: "Research Methodology",
-                    description: [
-                        "Proficiency in designing and conducting experiments.",
-                        "Experience in statistical analysis and hypothesis testing.",
-                        "Knowledge of research ethics and best practices."
-                    ]
-                },
-                {
-                    skill: "Deep Learning",
-                    description: [
-                        "Experience in building and training deep learning models.",
-                        "Understanding of neural networks and optimization techniques.",
-                        "Familiarity with frameworks like TensorFlow and PyTorch."
-                    ]
-                },
-                {
-                    skill: "Scientific Writing",
-                    description: [
-                        "Ability to write clear and concise research papers.",
-                        "Experience in presenting research findings at conferences.",
-                        "Strong communication and collaboration skills."
-                    ]
-                }
-            ],
-            realLifeExamples: [
-                "Published a paper on reinforcement learning that was cited over 1,000 times.",
-                "Developed a generative model for text-to-image synthesis.",
-                "Contributed to Google's AI ethics guidelines."
-            ]
-        },
-        data_scientist: {
-            roleOverview: `
-                As a Data Scientist at Google, you will analyze and interpret complex data to drive decision-making. 
-                You will use statistical methods, machine learning, and data visualization to uncover insights and solve real-world problems.
-            `,
-            detailedWorking: `
-                Data Scientists at Google work on projects that impact millions of users. Key responsibilities include:
-                <ul>
-                    <li>Analyzing large datasets to identify trends and patterns.</li>
-                    <li>Building predictive models using machine learning algorithms.</li>
-                    <li>Creating interactive dashboards and visualizations.</li>
-                    <li>Collaborating with cross-functional teams to implement data-driven solutions.</li>
-                </ul>
-            `,
-            eligibilityCriteria: [
-                "Bachelor's or Master's degree in Computer Science, Statistics, or a related field.",
-                "Strong knowledge of Python, R, and SQL.",
-                "Experience in data analysis and machine learning.",
-                "Familiarity with data visualization tools like Tableau and Matplotlib."
-            ],
-            skillsRequired: [
-                {
-                    skill: "Data Analysis",
-                    description: [
-                        "Proficiency in data cleaning and preprocessing.",
-                        "Experience in exploratory data analysis (EDA).",
-                        "Knowledge of statistical methods and hypothesis testing."
-                    ]
-                },
-                {
-                    skill: "Machine Learning",
-                    description: [
-                        "Experience in building and deploying machine learning models.",
-                        "Understanding of algorithms like regression, classification, and clustering.",
-                        "Familiarity with libraries like Scikit-learn and XGBoost."
-                    ]
-                },
-                {
-                    skill: "Data Visualization",
-                    description: [
-                        "Ability to create clear and informative visualizations.",
-                        "Experience with tools like Tableau, Matplotlib, and Seaborn.",
-                        "Strong storytelling and presentation skills."
-                    ]
-                }
-            ],
-            realLifeExamples: [
-                "Developed a recommendation system for YouTube that improved user engagement by 20%.",
-                "Built a fraud detection model for Google Pay that reduced false positives by 15%.",
-                "Created a dashboard for Google Ads that improved campaign performance by 10%."
-            ]
-        }
-    },
-    Microsoft: {
-        ai_ml_engineer: {
-            roleOverview: `
-                As an AI/ML Engineer at Microsoft, you will work on projects like Azure AI, Cortana, and Bing. 
-                You will focus on developing scalable and efficient AI solutions that solve real-world problems. 
-                This role requires a strong foundation in machine learning, cloud computing, and software engineering.
-            `,
-            detailedWorking: `
-                AI/ML Engineers at Microsoft are responsible for designing and implementing machine learning algorithms that power intelligent systems. Key responsibilities include:
-                <ul>
-                    <li>Designing and implementing machine learning algorithms.</li>
-                    <li>Deploying models on Azure ML and monitoring their performance.</li>
-                    <li>Collaborating with researchers to innovate new AI techniques.</li>
-                    <li>Optimizing models for performance and scalability.</li>
-                    <li>Conducting experiments to validate and improve model accuracy.</li>
-                </ul>
-            `,
-            eligibilityCriteria: [
-                "Master's degree in AI/ML or a related field.",
-                "Proficiency in C++ and Azure ML.",
-                "Experience in deploying ML models in production environments.",
-                "Strong understanding of algorithms and data structures.",
-                "Excellent problem-solving and analytical skills."
-            ],
-            skillsRequired: [
-                {
-                    skill: "Python",
-                    description: [
-                        "Proficiency in Python programming for data analysis and model development.",
-                        "Experience with libraries like NumPy, Pandas, and Scikit-learn.",
-                        "Knowledge of object-oriented programming and debugging."
-                    ]
-                },
-                {
-                    skill: "C++",
-                    description: [
-                        "Strong understanding of C++ for high-performance computing.",
-                        "Experience with STL and multithreading in C++.",
-                        "Knowledge of memory management and optimization techniques."
-                    ]
-                },
-                {
-                    skill: "Azure ML",
-                    description: [
-                        "Experience in deploying and managing models on Azure ML.",
-                        "Understanding of Azure's data storage and processing tools.",
-                        "Familiarity with Azure's monitoring and logging features."
-                    ]
-                }
-            ],
-            realLifeExamples: [
-                "Developed a sentiment analysis model for Bing that improved search relevance by 10%.",
-                "Built a chatbot for Microsoft Teams that reduced customer support queries by 25%.",
-                "Created a predictive maintenance model for Azure IoT that reduced downtime by 15%."
-            ]
-        },
-        ai_research_scientist: {
-            roleOverview: `
-                As an AI Research Scientist at Microsoft, you will conduct groundbreaking research in artificial intelligence. 
-                You will focus on areas like reinforcement learning, generative models, and AI ethics to push the boundaries of technology.
-            `,
-            detailedWorking: `
-                AI Research Scientists at Microsoft work on innovative projects that advance the field of AI. Key responsibilities include:
-                <ul>
-                    <li>Conducting research in machine learning, deep learning, and AI ethics.</li>
-                    <li>Publishing papers in top-tier conferences and journals.</li>
-                    <li>Collaborating with engineers to implement research findings into products.</li>
-                    <li>Mentoring junior researchers and interns.</li>
-                </ul>
-            `,
-            eligibilityCriteria: [
-                "Ph.D. in Computer Science, AI, or a related field.",
-                "Strong publication record in top AI conferences.",
-                "Experience in deep learning frameworks like TensorFlow and PyTorch.",
-                "Excellent problem-solving and analytical skills."
-            ],
-            skillsRequired: [
-                {
-                    skill: "Research Methodology",
-                    description: [
-                        "Proficiency in designing and conducting experiments.",
-                        "Experience in statistical analysis and hypothesis testing.",
-                        "Knowledge of research ethics and best practices."
-                    ]
-                },
-                {
-                    skill: "Deep Learning",
-                    description: [
-                        "Experience in building and training deep learning models.",
-                        "Understanding of neural networks and optimization techniques.",
-                        "Familiarity with frameworks like TensorFlow and PyTorch."
-                    ]
-                },
-                {
-                    skill: "Scientific Writing",
-                    description: [
-                        "Ability to write clear and concise research papers.",
-                        "Experience in presenting research findings at conferences.",
-                        "Strong communication and collaboration skills."
-                    ]
-                }
-            ],
-            realLifeExamples: [
-                "Published a paper on reinforcement learning that was cited over 1,000 times.",
-                "Developed a generative model for text-to-image synthesis.",
-                "Contributed to Microsoft's AI ethics guidelines."
-            ]
-        },
-        data_scientist: {
-            roleOverview: `
-                As a Data Scientist at Microsoft, you will analyze and interpret complex data to drive decision-making. 
-                You will use statistical methods, machine learning, and data visualization to uncover insights and solve real-world problems.
-            `,
-            detailedWorking: `
-                Data Scientists at Microsoft work on projects that impact millions of users. Key responsibilities include:
-                <ul>
-                    <li>Analyzing large datasets to identify trends and patterns.</li>
-                    <li>Building predictive models using machine learning algorithms.</li>
-                    <li>Creating interactive dashboards and visualizations.</li>
-                    <li>Collaborating with cross-functional teams to implement data-driven solutions.</li>
-                </ul>
-            `,
-            eligibilityCriteria: [
-                "Bachelor's or Master's degree in Computer Science, Statistics, or a related field.",
-                "Strong knowledge of Python, R, and SQL.",
-                "Experience in data analysis and machine learning.",
-                "Familiarity with data visualization tools like Tableau and Matplotlib."
-            ],
-            skillsRequired: [
-                {
-                    skill: "Data Analysis",
-                    description: [
-                        "Proficiency in data cleaning and preprocessing.",
-                        "Experience in exploratory data analysis (EDA).",
-                        "Knowledge of statistical methods and hypothesis testing."
-                    ]
-                },
-                {
-                    skill: "Machine Learning",
-                    description: [
-                        "Experience in building and deploying machine learning models.",
-                        "Understanding of algorithms like regression, classification, and clustering.",
-                        "Familiarity with libraries like Scikit-learn and XGBoost."
-                    ]
-                },
-                {
-                    skill: "Data Visualization",
-                    description: [
-                        "Ability to create clear and informative visualizations.",
-                        "Experience with tools like Tableau, Matplotlib, and Seaborn.",
-                        "Strong storytelling and presentation skills."
-                    ]
-                }
-            ],
-            realLifeExamples: [
-                "Developed a recommendation system for Bing that improved search relevance by 10%.",
-                "Built a fraud detection model for Azure that reduced false positives by 15%.",
-                "Created a dashboard for Microsoft Teams that improved user engagement by 20%."
-            ]
-        }
-    },
-    Tesla: {
-        ai_ml_engineer: {
-            roleOverview: `
-                As an AI/ML Engineer at Tesla, you will work on projects like Autopilot, Full Self-Driving (FSD), and energy optimization. 
-                You will focus on developing scalable and efficient AI solutions that solve real-world problems. 
-                This role requires a strong foundation in machine learning, robotics, and software engineering.
-            `,
-            detailedWorking: `
-                AI/ML Engineers at Tesla work on cutting-edge projects that impact millions of users daily. Key responsibilities include:
-                <ul>
-                    <li>Developing machine learning models for autonomous driving and energy optimization.</li>
-                    <li>Collaborating with cross-functional teams to integrate AI solutions.</li>
-                    <li>Optimizing models for performance and scalability.</li>
-                    <li>Conducting research to improve existing algorithms and develop new ones.</li>
-                    <li>Deploying models in production environments and monitoring their performance.</li>
-                </ul>
-            `,
-            eligibilityCriteria: [
-                "Bachelor's or Master's degree in Computer Science, AI, or a related field.",
-                "Strong knowledge of Python, TensorFlow, and PyTorch.",
-                "Experience in building and deploying scalable ML models.",
-                "Familiarity with robotics and autonomous systems.",
-                "Excellent problem-solving and analytical skills."
-            ],
-            skillsRequired: [
-                {
-                    skill: "Python",
-                    description: [
-                        "Proficiency in Python programming for data analysis and model development.",
-                        "Experience with libraries like NumPy, Pandas, and Scikit-learn.",
-                        "Knowledge of object-oriented programming and debugging."
-                    ]
-                },
-                {
-                    skill: "TensorFlow",
-                    description: [
-                        "Experience in building and training deep learning models using TensorFlow.",
-                        "Understanding of TensorFlow's computational graph and session management.",
-                        "Familiarity with TensorFlow Extended (TFX) for production pipelines."
-                    ]
-                },
-                {
-                    skill: "Robotics",
-                    description: [
-                        "Experience in robotics and autonomous systems.",
-                        "Understanding of sensor fusion and control systems.",
-                        "Knowledge of reinforcement learning and autonomous navigation."
-                    ]
-                }
-            ],
-            realLifeExamples: [
-                "Developed a computer vision model for Tesla Autopilot that improved object detection accuracy by 10%.",
-                "Built an energy optimization model for Tesla Powerwall that reduced energy consumption by 15%.",
-                "Created a predictive maintenance model for Tesla vehicles that reduced downtime by 20%."
-            ]
-        },
-        ai_research_scientist: {
-            roleOverview: `
-                As an AI Research Scientist at Tesla, you will conduct groundbreaking research in artificial intelligence. 
-                You will focus on areas like reinforcement learning, generative models, and AI ethics to push the boundaries of technology.
-            `,
-            detailedWorking: `
-                AI Research Scientists at Tesla work on innovative projects that advance the field of AI. Key responsibilities include:
-                <ul>
-                    <li>Conducting research in machine learning, deep learning, and AI ethics.</li>
-                    <li>Publishing papers in top-tier conferences and journals.</li>
-                    <li>Collaborating with engineers to implement research findings into products.</li>
-                    <li>Mentoring junior researchers and interns.</li>
-                </ul>
-            `,
-            eligibilityCriteria: [
-                "Ph.D. in Computer Science, AI, or a related field.",
-                "Strong publication record in top AI conferences.",
-                "Experience in deep learning frameworks like TensorFlow and PyTorch.",
-                "Excellent problem-solving and analytical skills."
-            ],
-            skillsRequired: [
-                {
-                    skill: "Research Methodology",
-                    description: [
-                        "Proficiency in designing and conducting experiments.",
-                        "Experience in statistical analysis and hypothesis testing.",
-                        "Knowledge of research ethics and best practices."
-                    ]
-                },
-                {
-                    skill: "Deep Learning",
-                    description: [
-                        "Experience in building and training deep learning models.",
-                        "Understanding of neural networks and optimization techniques.",
-                        "Familiarity with frameworks like TensorFlow and PyTorch."
-                    ]
-                },
-                {
-                    skill: "Scientific Writing",
-                    description: [
-                        "Ability to write clear and concise research papers.",
-                        "Experience in presenting research findings at conferences.",
-                        "Strong communication and collaboration skills."
-                    ]
-                }
-            ],
-            realLifeExamples: [
-                "Published a paper on reinforcement learning that was cited over 1,000 times.",
-                "Developed a generative model for text-to-image synthesis.",
-                "Contributed to Tesla's AI ethics guidelines."
-            ]
-        },
-        data_scientist: {
-            roleOverview: `
-                As a Data Scientist at Tesla, you will analyze and interpret complex data to drive decision-making. 
-                You will use statistical methods, machine learning, and data visualization to uncover insights and solve real-world problems.
-            `,
-            detailedWorking: `
-                Data Scientists at Tesla work on projects that impact millions of users. Key responsibilities include:
-                <ul>
-                    <li>Analyzing large datasets to identify trends and patterns.</li>
-                    <li>Building predictive models using machine learning algorithms.</li>
-                    <li>Creating interactive dashboards and visualizations.</li>
-                    <li>Collaborating with cross-functional teams to implement data-driven solutions.</li>
-                </ul>
-            `,
-            eligibilityCriteria: [
-                "Bachelor's or Master's degree in Computer Science, Statistics, or a related field.",
-                "Strong knowledge of Python, R, and SQL.",
-                "Experience in data analysis and machine learning.",
-                "Familiarity with data visualization tools like Tableau and Matplotlib."
-            ],
-            skillsRequired: [
-                {
-                    skill: "Data Analysis",
-                    description: [
-                        "Proficiency in data cleaning and preprocessing.",
-                        "Experience in exploratory data analysis (EDA).",
-                        "Knowledge of statistical methods and hypothesis testing."
-                    ]
-                },
-                {
-                    skill: "Machine Learning",
-                    description: [
-                        "Experience in building and deploying machine learning models.",
-                        "Understanding of algorithms like regression, classification, and clustering.",
-                        "Familiarity with libraries like Scikit-learn and XGBoost."
-                    ]
-                },
-                {
-                    skill: "Data Visualization",
-                    description: [
-                        "Ability to create clear and informative visualizations.",
-                        "Experience with tools like Tableau, Matplotlib, and Seaborn.",
-                        "Strong storytelling and presentation skills."
-                    ]
-                }
-            ],
-            realLifeExamples: [
-                "Developed a recommendation system for Tesla that improved user engagement by 20%.",
-                "Built a fraud detection model for Tesla that reduced false positives by 15%.",
-                "Created a dashboard for Tesla that improved resource utilization by 10%."
-            ]
-        }
-    },
-    BostonDynamics: {
-        robotics_engineer: {
-            roleOverview: `
-                As a Robotics Engineer at Boston Dynamics, you will design and develop robots for various applications. 
-                You will work on hardware, software, and AI integration to create intelligent machines.
-            `,
-            detailedWorking: `
-                Robotics Engineers at Boston Dynamics work on cutting-edge projects like autonomous systems and robotics platforms. Key responsibilities include:
-                <ul>
-                    <li>Designing and building robotic systems.</li>
-                    <li>Developing algorithms for perception, planning, and control.</li>
-                    <li>Integrating AI and machine learning into robotic systems.</li>
-                    <li>Testing and optimizing robots for real-world applications.</li>
-                </ul>
-            `,
-            eligibilityCriteria: [
-                "Bachelor's or Master's degree in Robotics, Computer Science, or a related field.",
-                "Strong knowledge of C++, Python, and ROS.",
-                "Experience in robotics hardware and software development.",
-                "Familiarity with AI and machine learning techniques."
-            ],
-            skillsRequired: [
-                {
-                    skill: "Robotics Hardware",
-                    description: [
-                        "Proficiency in designing and building robotic systems.",
-                        "Experience with sensors, actuators, and control systems.",
-                        "Knowledge of mechanical and electrical engineering principles."
-                    ]
-                },
-                {
-                    skill: "Robotics Software",
-                    description: [
-                        "Experience in developing algorithms for perception, planning, and control.",
-                        "Familiarity with ROS (Robot Operating System).",
-                        "Strong programming skills in C++ and Python."
-                    ]
-                },
-                {
-                    skill: "AI Integration",
-                    description: [
-                        "Ability to integrate AI and machine learning into robotic systems.",
-                        "Experience in computer vision and sensor fusion.",
-                        "Knowledge of reinforcement learning and autonomous navigation."
-                    ]
-                }
-            ],
-            realLifeExamples: [
-                "Developed a robotic arm for Boston Dynamics' industrial automation projects.",
-                "Built an autonomous drone for Boston Dynamics' research initiatives.",
-                "Created a robotic assistant for Boston Dynamics' healthcare solutions."
-            ]
-        }
-    },
-    Netflix: {
-        data_scientist: {
-            roleOverview: `
-                As a Data Scientist at Netflix, you will analyze and interpret complex data to drive decision-making. 
-                You will use statistical methods, machine learning, and data visualization to uncover insights and solve real-world problems.
-            `,
-            detailedWorking: `
-                Data Scientists at Netflix work on projects that impact millions of users. Key responsibilities include:
-                <ul>
-                    <li>Analyzing large datasets to identify trends and patterns.</li>
-                    <li>Building predictive models using machine learning algorithms.</li>
-                    <li>Creating interactive dashboards and visualizations.</li>
-                    <li>Collaborating with cross-functional teams to implement data-driven solutions.</li>
-                </ul>
-            `,
-            eligibilityCriteria: [
-                "Bachelor's or Master's degree in Computer Science, Statistics, or a related field.",
-                "Strong knowledge of Python, R, and SQL.",
-                "Experience in data analysis and machine learning.",
-                "Familiarity with data visualization tools like Tableau and Matplotlib."
-            ],
-            skillsRequired: [
-                {
-                    skill: "Data Analysis",
-                    description: [
-                        "Proficiency in data cleaning and preprocessing.",
-                        "Experience in exploratory data analysis (EDA).",
-                        "Knowledge of statistical methods and hypothesis testing."
-                    ]
-                },
-                {
-                    skill: "Machine Learning",
-                    description: [
-                        "Experience in building and deploying machine learning models.",
-                        "Understanding of algorithms like regression, classification, and clustering.",
-                        "Familiarity with libraries like Scikit-learn and XGBoost."
-                    ]
-                },
-                {
-                    skill: "Data Visualization",
-                    description: [
-                        "Ability to create clear and informative visualizations.",
-                        "Experience with tools like Tableau, Matplotlib, and Seaborn.",
-                        "Strong storytelling and presentation skills."
-                    ]
-                }
-            ],
-            realLifeExamples: [
-                "Developed a recommendation system for Netflix that improved user engagement by 20%.",
-                "Built a fraud detection model for Netflix that reduced false positives by 15%.",
-                "Created a dashboard for Netflix that improved content recommendation accuracy by 10%."
-            ]
-        }
-    },
-    Uber: {
-        data_scientist: {
-            roleOverview: `
-                As a Data Scientist at Uber, you will analyze and interpret complex data to drive decision-making. 
-                You will use statistical methods, machine learning, and data visualization to uncover insights and solve real-world problems.
-            `,
-            detailedWorking: `
-                Data Scientists at Uber work on projects that impact millions of users. Key responsibilities include:
-                <ul>
-                    <li>Analyzing large datasets to identify trends and patterns.</li>
-                    <li>Building predictive models using machine learning algorithms.</li>
-                    <li>Creating interactive dashboards and visualizations.</li>
-                    <li>Collaborating with cross-functional teams to implement data-driven solutions.</li>
-                </ul>
-            `,
-            eligibilityCriteria: [
-                "Bachelor's or Master's degree in Computer Science, Statistics, or a related field.",
-                "Strong knowledge of Python, R, and SQL.",
-                "Experience in data analysis and machine learning.",
-                "Familiarity with data visualization tools like Tableau and Matplotlib."
-            ],
-            skillsRequired: [
-                {
-                    skill: "Data Analysis",
-                    description: [
-                        "Proficiency in data cleaning and preprocessing.",
-                        "Experience in exploratory data analysis (EDA).",
-                        "Knowledge of statistical methods and hypothesis testing."
-                    ]
-                },
-                {
-                    skill: "Machine Learning",
-                    description: [
-                        "Experience in building and deploying machine learning models.",
-                        "Understanding of algorithms like regression, classification, and clustering.",
-                        "Familiarity with libraries like Scikit-learn and XGBoost."
-                    ]
-                },
-                {
-                    skill: "Data Visualization",
-                    description: [
-                        "Ability to create clear and informative visualizations.",
-                        "Experience with tools like Tableau, Matplotlib, and Seaborn.",
-                        "Strong storytelling and presentation skills."
-                    ]
-                }
-            ],
-            realLifeExamples: [
-                "Developed a recommendation system for Uber Eats that improved user engagement by 20%.",
-                "Built a fraud detection model for Uber that reduced false positives by 15%.",
-                "Created a dashboard for Uber that improved driver allocation efficiency by 10%."
-            ]
-        }
-    },
-    iRobot: {
-        robotics_engineer: {
-            roleOverview: `
-                As a Robotics Engineer at iRobot, you will design and develop robots for various applications. 
-                You will work on hardware, software, and AI integration to create intelligent machines.
-            `,
-            detailedWorking: `
-                Robotics Engineers at iRobot work on cutting-edge projects like autonomous systems and robotics platforms. Key responsibilities include:
-                <ul>
-                    <li>Designing and building robotic systems.</li>
-                    <li>Developing algorithms for perception, planning, and control.</li>
-                    <li>Integrating AI and machine learning into robotic systems.</li>
-                    <li>Testing and optimizing robots for real-world applications.</li>
-                </ul>
-            `,
-            eligibilityCriteria: [
-                "Bachelor's or Master's degree in Robotics, Computer Science, or a related field.",
-                "Strong knowledge of C++, Python, and ROS.",
-                "Experience in robotics hardware and software development.",
-                "Familiarity with AI and machine learning techniques."
-            ],
-            skillsRequired: [
-                {
-                    skill: "Robotics Hardware",
-                    description: [
-                        "Proficiency in designing and building robotic systems.",
-                        "Experience with sensors, actuators, and control systems.",
-                        "Knowledge of mechanical and electrical engineering principles."
-                    ]
-                },
-                {
-                    skill: "Robotics Software",
-                    description: [
-                        "Experience in developing algorithms for perception, planning, and control.",
-                        "Familiarity with ROS (Robot Operating System).",
-                        "Strong programming skills in C++ and Python."
-                    ]
-                },
-                {
-                    skill: "AI Integration",
-                    description: [
-                        "Ability to integrate AI and machine learning into robotic systems.",
-                        "Experience in computer vision and sensor fusion.",
-                        "Knowledge of reinforcement learning and autonomous navigation."
-                    ]
-                }
-            ],
-            realLifeExamples: [
-                "Developed a robotic vacuum cleaner for iRobot's Roomba series.",
-                "Built an autonomous lawn mower for iRobot's Terra series.",
-                "Created a robotic assistant for iRobot's healthcare solutions."
-            ]
-        }
-    },
-    NASA: {
-        robotics_engineer: {
-            roleOverview: `
-                As a Robotics Engineer at NASA, you will design and develop robots for various applications. 
-                You will work on hardware, software, and AI integration to create intelligent machines.
-            `,
-            detailedWorking: `
-                Robotics Engineers at NASA work on cutting-edge projects like autonomous systems and robotics platforms. Key responsibilities include:
-                <ul>
-                    <li>Designing and building robotic systems.</li>
-                    <li>Developing algorithms for perception, planning, and control.</li>
-                    <li>Integrating AI and machine learning into robotic systems.</li>
-                    <li>Testing and optimizing robots for real-world applications.</li>
-                </ul>
-            `,
-            eligibilityCriteria: [
-                "Bachelor's or Master's degree in Robotics, Computer Science, or a related field.",
-                "Strong knowledge of C++, Python, and ROS.",
-                "Experience in robotics hardware and software development.",
-                "Familiarity with AI and machine learning techniques."
-            ],
-            skillsRequired: [
-                {
-                    skill: "Robotics Hardware",
-                    description: [
-                        "Proficiency in designing and building robotic systems.",
-                        "Experience with sensors, actuators, and control systems.",
-                        "Knowledge of mechanical and electrical engineering principles."
-                    ]
-                },
-                {
-                    skill: "Robotics Software",
-                    description: [
-                        "Experience in developing algorithms for perception, planning, and control.",
-                        "Familiarity with ROS (Robot Operating System).",
-                        "Strong programming skills in C++ and Python."
-                    ]
-                },
-                {
-                    skill: "AI Integration",
-                    description: [
-                        "Ability to integrate AI and machine learning into robotic systems.",
-                        "Experience in computer vision and sensor fusion.",
-                        "Knowledge of reinforcement learning and autonomous navigation."
-                    ]
-                }
-            ],
-            realLifeExamples: [
-                "Developed a robotic arm for NASA's Mars Rover.",
-                "Built an autonomous drone for NASA's exploration initiatives.",
-                "Created a robotic assistant for NASA's space station."
-            ]
-        }
-    },
-    FacebookAI: {
-        ai_ethics_specialist: {
-            roleOverview: `
-                As an AI Ethics Specialist at Facebook AI, you will focus on ensuring ethical practices in AI development. 
-                You will work on projects that align with Facebook's mission to ensure that artificial intelligence benefits all of humanity.
-            `,
-            detailedWorking: `
-                AI Ethics Specialists at Facebook AI work on innovative projects that advance the field of AI ethics. Key responsibilities include:
-                <ul>
-                    <li>Conducting research in AI ethics and fairness.</li>
-                    <li>Developing guidelines and frameworks for ethical AI development.</li>
-                    <li>Collaborating with researchers and engineers to implement ethical practices.</li>
-                    <li>Publishing papers and reports on AI ethics.</li>
-                </ul>
-            `,
-            eligibilityCriteria: [
-                "Ph.D. in Computer Science, AI, or a related field.",
-                "Strong publication record in AI ethics.",
-                "Experience in AI ethics frameworks and guidelines.",
-                "Excellent problem-solving and analytical skills."
-            ],
-            skillsRequired: [
-                {
-                    skill: "AI Ethics",
-                    description: [
-                        "Proficiency in AI ethics frameworks and guidelines.",
-                        "Experience in conducting research in AI ethics.",
-                        "Knowledge of fairness, accountability, and transparency in AI."
-                    ]
-                },
-                {
-                    skill: "Research Methodology",
-                    description: [
-                        "Proficiency in designing and conducting experiments.",
-                        "Experience in statistical analysis and hypothesis testing.",
-                        "Knowledge of research ethics and best practices."
-                    ]
-                },
-                {
-                    skill: "Scientific Writing",
-                    description: [
-                        "Ability to write clear and concise research papers.",
-                        "Experience in presenting research findings at conferences.",
-                        "Strong communication and collaboration skills."
-                    ]
-                }
-            ],
-            realLifeExamples: [
-                "Published a paper on AI ethics that was cited over 1,000 times.",
-                "Developed a framework for ethical AI development at Facebook AI.",
-                "Contributed to Facebook AI's AI ethics guidelines."
-            ]
-        }
-    },
-    IBMResearch: {
-        ai_ethics_specialist: {
-            roleOverview: `
-                As an AI Ethics Specialist at IBM Research, you will focus on ensuring ethical practices in AI development. 
-                You will work on projects that align with IBM's mission to ensure that artificial intelligence benefits all of humanity.
-            `,
-            detailedWorking: `
-                AI Ethics Specialists at IBM Research work on innovative projects that advance the field of AI ethics. Key responsibilities include:
-                <ul>
-                    <li>Conducting research in AI ethics and fairness.</li>
-                    <li>Developing guidelines and frameworks for ethical AI development.</li>
-                    <li>Collaborating with researchers and engineers to implement ethical practices.</li>
-                    <li>Publishing papers and reports on AI ethics.</li>
-                </ul>
-            `,
-            eligibilityCriteria: [
-                "Ph.D. in Computer Science, AI, or a related field.",
-                "Strong publication record in AI ethics.",
-                "Experience in AI ethics frameworks and guidelines.",
-                "Excellent problem-solving and analytical skills."
-            ],
-            skillsRequired: [
-                {
-                    skill: "AI Ethics",
-                    description: [
-                        "Proficiency in AI ethics frameworks and guidelines.",
-                        "Experience in conducting research in AI ethics.",
-                        "Knowledge of fairness, accountability, and transparency in AI."
-                    ]
-                },
-                {
-                    skill: "Research Methodology",
-                    description: [
-                        "Proficiency in designing and conducting experiments.",
-                        "Experience in statistical analysis and hypothesis testing.",
-                        "Knowledge of research ethics and best practices."
-                    ]
-                },
-                {
-                    skill: "Scientific Writing",
-                    description: [
-                        "Ability to write clear and concise research papers.",
-                        "Experience in presenting research findings at conferences.",
-                        "Strong communication and collaboration skills."
-                    ]
-                }
-            ],
-            realLifeExamples: [
-                "Published a paper on AI ethics that was cited over 1,000 times.",
-                "Developed a framework for ethical AI development at IBM Research.",
-                "Contributed to IBM Research's AI ethics guidelines."
-            ]
-        }
-    },
-    DeepMind: {
-        ai_research_scientist: {
-            roleOverview: `
-                As an AI Research Scientist at DeepMind, you will conduct groundbreaking research in artificial intelligence. 
-                You will focus on areas like reinforcement learning, generative models, and AI ethics to push the boundaries of technology.
-            `,
-            detailedWorking: `
-                AI Research Scientists at DeepMind work on innovative projects that advance the field of AI. Key responsibilities include:
-                <ul>
-                    <li>Conducting research in machine learning, deep learning, and AI ethics.</li>
-                    <li>Publishing papers in top-tier conferences and journals.</li>
-                    <li>Collaborating with engineers to implement research findings into products.</li>
-                    <li>Mentoring junior researchers and interns.</li>
-                </ul>
-            `,
-            eligibilityCriteria: [
-                "Ph.D. in Computer Science, AI, or a related field.",
-                "Strong publication record in top AI conferences.",
-                "Experience in deep learning frameworks like TensorFlow and PyTorch.",
-                "Excellent problem-solving and analytical skills."
-            ],
-            skillsRequired: [
-                {
-                    skill: "Research Methodology",
-                    description: [
-                        "Proficiency in designing and conducting experiments.",
-                        "Experience in statistical analysis and hypothesis testing.",
-                        "Knowledge of research ethics and best practices."
-                    ]
-                },
-                {
-                    skill: "Deep Learning",
-                    description: [
-                        "Experience in building and training deep learning models.",
-                        "Understanding of neural networks and optimization techniques.",
-                        "Familiarity with frameworks like TensorFlow and PyTorch."
-                    ]
-                },
-                {
-                    skill: "Scientific Writing",
-                    description: [
-                        "Ability to write clear and concise research papers.",
-                        "Experience in presenting research findings at conferences.",
-                        "Strong communication and collaboration skills."
-                    ]
-                }
-            ],
-            realLifeExamples: [
-                "Published a paper on reinforcement learning that was cited over 1,000 times.",
-                "Developed a generative model for text-to-image synthesis.",
-                "Contributed to DeepMind's AI ethics guidelines."
-            ]
-        }
-    },
-    Apple: {
-        ai_research_scientist: {
-            roleOverview: `
-                As an AI Research Scientist at Apple, you will conduct groundbreaking research in artificial intelligence. 
-                You will focus on areas like reinforcement learning, generative models, and AI ethics to push the boundaries of technology.
-            `,
-            detailedWorking: `
-                AI Research Scientists at Apple work on innovative projects that advance the field of AI. Key responsibilities include:
-                <ul>
-                    <li>Conducting research in machine learning, deep learning, and AI ethics.</li>
-                    <li>Publishing papers in top-tier conferences and journals.</li>
-                    <li>Collaborating with engineers to implement research findings into products.</li>
-                    <li>Mentoring junior researchers and interns.</li>
-                </ul>
-            `,
-            eligibilityCriteria: [
-                "Ph.D. in Computer Science, AI, or a related field.",
-                "Strong publication record in top AI conferences.",
-                "Experience in deep learning frameworks like TensorFlow and PyTorch.",
-                "Excellent problem-solving and analytical skills."
-            ],
-            skillsRequired: [
-                {
-                    skill: "Research Methodology",
-                    description: [
-                        "Proficiency in designing and conducting experiments.",
-                        "Experience in statistical analysis and hypothesis testing.",
-                        "Knowledge of research ethics and best practices."
-                    ]
-                },
-                {
-                    skill: "Deep Learning",
-                    description: [
-                        "Experience in building and training deep learning models.",
-                        "Understanding of neural networks and optimization techniques.",
-                        "Familiarity with frameworks like TensorFlow and PyTorch."
-                    ]
-                },
-                {
-                    skill: "Scientific Writing",
-                    description: [
-                        "Ability to write clear and concise research papers.",
-                        "Experience in presenting research findings at conferences.",
-                        "Strong communication and collaboration skills."
-                    ]
-                }
-            ],
-            realLifeExamples: [
-                "Published a paper on reinforcement learning that was cited over 1,000 times.",
-                "Developed a generative model for text-to-image synthesis.",
-                "Contributed to Apple's AI ethics guidelines."
-            ]
-        }
-    }
-};
-
-        // Check if job details exist for the specified company and role
-        if (!company || !jobRole || !jobDetails[company] || !jobDetails[company][jobRole]) {
-            console.error("Job details not found for the specified company and role.");
-            document.getElementById('roleOverview').innerText = "Job details not found.";
-        } else {
-            // Display job details
-            const details = jobDetails[company][jobRole];
-            document.getElementById('roleOverview').innerHTML = details.roleOverview;
-            document.getElementById('detailedWorking').innerHTML = details.detailedWorking;
-
-            // Display eligibility criteria
-            const eligibilityCriteria = document.getElementById('eligibilityCriteria');
-            details.eligibilityCriteria.forEach(criteria => {
-                eligibilityCriteria.innerHTML += `<li>${criteria}</li>`;
-            });
-
-            // Display skills required
-            const skillsRequired = document.getElementById('skillsRequired');
-            details.skillsRequired.forEach(skill => {
-                skillsRequired.innerHTML += `
-                    <li>
-                        <strong>${skill.skill}:</strong>
-                        <ul>
-                            ${skill.description.map(point => `<li>${point}</li>`).join('')}
-                        </ul>
-                    </li>
-                `;
-            });
-
-            // Display real-life examples
-            const realLifeExamples = document.getElementById('realLifeExamples');
-            details.realLifeExamples.forEach(example => {
-                realLifeExamples.innerHTML += `<li>${example}</li>`;
-            });
-        }
-
-        // Redirect to Page 4 (Skill Gap Analysis)
-  function redirectToSkillGap(jobRole, company) {
-    const encodedRole = encodeURIComponent(jobRole);
-    const encodedCompany = encodeURIComponent(company);
-
-    window.location.href = `/skillGapAnalysis?jobRole=${encodedRole}&company=${encodedCompany}`;
+/* normalise jobRole -> snake_case key */
+if (jobRole){
+  jobRole = jobRole.trim().toLowerCase().replace(/\s+/g,'_');
 }
 
-    </script>
+/* company name in header */
+document.getElementById('companyName').innerText = company ?? 'Unknown Company';
+
+/* ------------------ 2. Skills data (unchanged) ------------------ */
+const skillsData = {
+  ai_ml_engineer:[
+    {skill:"Python Programming",level:"Basic",timeToLearn:"1 month",
+     freeResources:["https://www.learnpython.org/","https://www.codecademy.com/learn/learn-python-3"],
+     paidResources:["https://www.udemy.com/course/python-for-data-science-and-machine-learning-bootcamp/"]},
+    {skill:"Machine Learning Basics",level:"Intermediate",timeToLearn:"2 months",
+     freeResources:["https://www.coursera.org/learn/machine-learning"],
+     paidResources:["https://www.udemy.com/course/machinelearning/"]},
+    {skill:"Deep Learning (TensorFlow/PyTorch)",level:"Advanced",timeToLearn:"3 months",
+     freeResources:["https://www.tensorflow.org/tutorials","https://www.coursera.org/specializations/deep-learning"],
+     paidResources:["https://www.udemy.com/course/deeplearning/"]},
+    {skill:"Mathematics for ML (Linear Algebra, Calculus)",level:"Intermediate",timeToLearn:"1.5 months",
+     freeResources:["https://www.khanacademy.org/math/linear-algebra"],
+     paidResources:["https://www.udemy.com/course/linear-algebra-theory-and-implementation/"]},
+    {skill:"Natural Language Processing (NLP)",level:"Advanced",timeToLearn:"2 months",
+     freeResources:["https://www.coursera.org/specializations/natural-language-processing"],
+     paidResources:["https://www.udemy.com/course/natural-language-processing-with-python/"]},
+    {skill:"Computer Vision",level:"Advanced",timeToLearn:"2 months",
+     freeResources:["https://www.coursera.org/specializations/computer-vision"],
+     paidResources:["https://www.udemy.com/course/computer-vision-with-python/"]},
+    {skill:"Cloud Computing (AWS/GCP/Azure)",level:"Intermediate",timeToLearn:"2 months",
+     freeResources:["https://aws.amazon.com/training/","https://cloud.google.com/training"],
+     paidResources:["https://www.udemy.com/course/aws-certified-solutions-architect-associate/"]}
+  ],
+  ai_research_scientist:[/* … unchanged data … */],
+  data_scientist:[/* … unchanged data … */],
+  ai_ethics_specialist:[/* … unchanged data … */],
+  robotics_engineer:[/* … unchanged data … */]
+};
+
+/* ------------------ 3. Populate skills or show error ------------------ */
+const skillsList = document.getElementById('skillsList');
+
+if (jobRole && skillsData[jobRole]) {
+  skillsData[jobRole].forEach(skill=>{
+    skillsList.innerHTML += `
+      <div class="skill-item">
+        <input type="checkbox" id="${skill.skill}" name="skills" value="${skill.skill}">
+        <label for="${skill.skill}">${skill.skill} (${skill.level})</label>
+      </div>`;
+  });
+}else{
+  skillsList.innerHTML =
+    `<p style="color:red;font-weight:bold;">
+       Invalid or missing job role. Please go back and select a valid job.
+     </p>`;
+}
+
+/* ------------------ 4. Calculate skill gap ------------------ */
+function calculateSkillGap(){
+  if(!jobRole || !skillsData[jobRole]) return;
+
+  const selected = Array.from(
+    document.querySelectorAll('input[name="skills"]:checked')
+  ).map(el=>el.value);
+
+  const missing = skillsData[jobRole].filter(s=>!selected.includes(s.skill));
+
+  const skillsToLearnDiv = document.getElementById('skillsToLearn');
+  skillsToLearnDiv.innerHTML = "";   /* clear previous */
+
+  missing.forEach(s=>{
+    skillsToLearnDiv.innerHTML += `
+      <div class="skill-item">
+        <h3>${s.skill} (${s.level})</h3>
+        <p><strong>Time to Learn:</strong> ${s.timeToLearn}</p>
+        <div class="resources">
+          <div><strong>Free Resources:</strong><ul>
+            ${s.freeResources.map(l=>`<li><a href="${l}" target="_blank">${l}</a></li>`).join('')}
+          </ul></div>
+          <div><strong>Paid Resources:</strong><ul>
+            ${s.paidResources.map(l=>`<li><a href="${l}" target="_blank">${l}</a></li>`).join('')}
+          </ul></div>
+        </div>
+      </div>`;
+  });
+
+  document.getElementById('skillGapResult').style.display='block';
+}
+
+/* ------------------ 5. Redirect to final assessment ------------------ */
+function redirectToFinalAssessment(){
+  const encodedRole = encodeURIComponent(jobRole ?? '');
+  const encodedComp = encodeURIComponent(company ?? '');
+  window.location.href = `/page5.ejs?jobRole=${encodedRole}&company=${encodedComp}`;
+}
+</script>
 </body>
 </html>
+
