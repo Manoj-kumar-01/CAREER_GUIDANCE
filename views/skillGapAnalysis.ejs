@@ -184,9 +184,13 @@
         }
 
         // Redirect to Final Assessment
-        function redirectToFinalAssessment() {
-            window.location.href = `page5.ejs?jobRole=${jobRole}&company=${company}`;
-        }
+      function redirectToFinalAssessment(jobRole, company) {
+    const encodedRole = encodeURIComponent(jobRole);
+    const encodedCompany = encodeURIComponent(company);
+
+    window.location.href = `/views/page5.ejs?jobRole=${encodedRole}&company=${encodedCompany}`;
+}
+
     </script>
 </body>
 </html>
