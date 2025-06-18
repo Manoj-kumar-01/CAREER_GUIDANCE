@@ -1062,7 +1062,7 @@
             alert(`You've selected ${branch}. Redirecting to career paths...`);
             
             // Redirect to careers page (you can modify this)
-            window.location.href = `/views/jobRoleSelection.ejs?branch=${encodeURIComponent(branch)}`;
+            window.location.href = `/jobRoleSelection?branch=${encodeURIComponent(branch)}`;
         }
 
         document.getElementById('submitReview').addEventListener('submit', function(e) {
@@ -1121,7 +1121,7 @@
             });
         });
         function gotoProfile(){
-            window.location.href='/views/Profile.ejs';
+            window.location.href='/Profile';
         }
         function logout(){
             window.location.href='/logout';
