@@ -464,11 +464,9 @@
         }
 
         // Redirect to job details page
-        function selectJobRole(company) {
-             const encodedRole = encodeURIComponent(jobRole);
-            const encodedCompany = encodeURIComponent(company);
-           window.location.href = `/views/jobDetails.ejs?jobRole=${encodedRole}&company=${encodedCompany}`;
-        }
+        function selectJobRole(jobRole) {
+    window.location.href = `/companiesHiring?jobRole=${encodeURIComponent(jobRole)}`;
+}
     </script>
 </body>
 </html>
