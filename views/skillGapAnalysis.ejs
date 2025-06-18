@@ -254,10 +254,6 @@ function calculateSkillGap() {
     document.getElementById('skillsToLearn').innerHTML = out;
     document.getElementById('skillGapResult').style.display = 'block';
 }
-
-/* ------------------------------------------------------------------ */
-/* 5. Redirect to final assessment                                    */
-/* ------------------------------------------------------------------ */
 function redirectToFinalAssessment() {
     const encodedRole = encodeURIComponent(jobRole ?? '');
     const encodedComp = encodeURIComponent(company ?? '');
