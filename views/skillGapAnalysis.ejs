@@ -1,167 +1,268 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Skill Gap Analysis</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: #f4f4f9;
-      color: #333;
-      padding: 20px;
-    }
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-    h1, h2 {
-      color: #0056b3;
-    }
-    .section {
-      margin: 20px 0;
-    }
-    .skills-list {
-      margin: 10px 0;
-    }
-    .skill-item {
-      margin: 10px 0;
-      padding: 10px;
-      background: #e9ecef;
-      border-radius: 5px;
-    }
-    .skill-item label {
-      margin-left: 10px;
-    }
-    .resources {
-      margin: 20px 0;
-    }
-    .resources div {
-      margin: 10px 0;
-    }
-    .resources a {
-      color: #0056b3;
-      text-decoration: none;
-    }
-    .resources a:hover {
-      text-decoration: underline;
-    }
-    button {
-      background: #0056b3;
-      color: #fff;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #004494;
-    }
-    #errorMessage {
-      color: red;
-      font-weight: bold;
-      margin-bottom: 20px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Gap Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f4f4f9;
+            color: #333;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 { color: #0056b3; }
+        .section { margin: 20px 0; }
+        .skills-list { margin: 10px 0; }
+        .skill-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+        }
+        .skill-item label { margin-left: 10px; }
+        .resources { margin: 20px 0; }
+        .resources div { margin: 10px 0; }
+        .resources a {
+            color: #0056b3;
+            text-decoration: none;
+        }
+        .resources a:hover { text-decoration: underline; }
+        button {
+            background: #0056b3;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover { background: #004494; }
+    </style>
 </head>
 <body>
-  <div class="container" id="mainContainer">
-    <h1>Skill Gap Analysis for <span id="companyName"></span></h1>
+    <div class="container">
+        <h1>Skill Gap Analysis for <span id="companyName"></span></h1>
 
-    <div id="errorMessage"></div>
-
-    <!-- Skills List -->
-    <div class="section" id="skillsSection">
-      <h2>Select Skills You Already Know</h2>
-      <div class="skills-list" id="skillsList"></div>
-      <button onclick="calculateSkillGap()">Calculate Skill Gap</button>
-    </div>
-
-    <!-- Skill Gap Result -->
-    <div class="section" id="skillGapResult" style="display: none;">
-      <h2>Skills to Learn</h2>
-      <div id="skillsToLearn"></div>
-    </div>
-
-    <button onclick="redirectToFinalAssessment()">Proceed to Final Assessment</button>
-  </div>
-
-  <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const jobRole = urlParams.get('jobRole');
-    const company = urlParams.get('company');
-
-    document.getElementById('companyName').innerText = company;
-
-    const skillsData = {
-      ai_ml_engineer: [
-        { skill: "Python Programming", level: "Basic", timeToLearn: "1 month", freeResources: ["https://www.learnpython.org/", "https://www.codecademy.com/learn/learn-python-3"], paidResources: ["https://www.udemy.com/course/python-for-data-science-and-machine-learning-bootcamp/"] },
-        { skill: "Machine Learning Basics", level: "Intermediate", timeToLearn: "2 months", freeResources: ["https://www.coursera.org/learn/machine-learning"], paidResources: ["https://www.udemy.com/course/machinelearning/"] },
-        { skill: "Deep Learning (TensorFlow/PyTorch)", level: "Advanced", timeToLearn: "3 months", freeResources: ["https://www.tensorflow.org/tutorials", "https://www.coursera.org/specializations/deep-learning"], paidResources: ["https://www.udemy.com/course/deeplearning/"] },
-        { skill: "Mathematics for ML (Linear Algebra, Calculus)", level: "Intermediate", timeToLearn: "1.5 months", freeResources: ["https://www.khanacademy.org/math/linear-algebra"], paidResources: ["https://www.udemy.com/course/linear-algebra-theory-and-implementation/"] },
-        { skill: "Natural Language Processing (NLP)", level: "Advanced", timeToLearn: "2 months", freeResources: ["https://www.coursera.org/specializations/natural-language-processing"], paidResources: ["https://www.udemy.com/course/natural-language-processing-with-python/"] },
-        { skill: "Computer Vision", level: "Advanced", timeToLearn: "2 months", freeResources: ["https://www.coursera.org/specializations/computer-vision"], paidResources: ["https://www.udemy.com/course/computer-vision-with-python/"] },
-        { skill: "Cloud Computing (AWS/GCP/Azure)", level: "Intermediate", timeToLearn: "2 months", freeResources: ["https://aws.amazon.com/training/", "https://cloud.google.com/training"], paidResources: ["https://www.udemy.com/course/aws-certified-solutions-architect-associate/"] }
-      ],
-      // Include other job roles here...
-    };
-
-    const mainContainer = document.getElementById('mainContainer');
-    const errorMessage = document.getElementById('errorMessage');
-    const skillsSection = document.getElementById('skillsSection');
-
-    if (!jobRole || !company || !skillsData[jobRole]) {
-      errorMessage.innerText = "Invalid or missing job role. Please go back and select a valid job.";
-      skillsSection.style.display = 'none';
-    } else {
-      const skillsList = document.getElementById('skillsList');
-      skillsData[jobRole].forEach(skill => {
-        skillsList.innerHTML += `
-          <div class="skill-item">
-            <input type="checkbox" id="${skill.skill}" name="skills" value="${skill.skill}">
-            <label for="${skill.skill}">${skill.skill} (${skill.level})</label>
-          </div>
-        `;
-      });
-    }
-
-    function calculateSkillGap() {
-      const selectedSkills = Array.from(document.querySelectorAll('input[name="skills"]:checked')).map(skill => skill.value);
-      const skillsToLearn = skillsData[jobRole].filter(skill => !selectedSkills.includes(skill.skill));
-      const skillsToLearnDiv = document.getElementById('skillsToLearn');
-      skillsToLearnDiv.innerHTML = skillsToLearn.map(skill => `
-        <div class="skill-item">
-          <h3>${skill.skill} (${skill.level})</h3>
-          <p><strong>Time to Learn:</strong> ${skill.timeToLearn}</p>
-          <div class="resources">
-            <div>
-              <strong>Free Resources:</strong>
-              <ul>
-                ${skill.freeResources.map(link => `<li><a href="${link}" target="_blank">${link}</a></li>`).join('')}
-              </ul>
-            </div>
-            <div>
-              <strong>Paid Resources:</strong>
-              <ul>
-                ${skill.paidResources.map(link => `<li><a href="${link}" target="_blank">${link}</a></li>`).join('')}
-              </ul>
-            </div>
-          </div>
+        <!-- Skills List -->
+        <div class="section">
+            <h2>Select Skills You Already Know</h2>
+            <div class="skills-list" id="skillsList"></div>
+            <button onclick="calculateSkillGap()">Calculate Skill Gap</button>
         </div>
-      `).join('');
-      document.getElementById('skillGapResult').style.display = 'block';
-    }
 
-    function redirectToFinalAssessment() {
-      const encodedRole = encodeURIComponent(jobRole);
-      const encodedCompany = encodeURIComponent(company);
-      window.location.href = `/page5?jobRole=${encodedRole}&company=${encodedCompany}`;
-    }
-  </script>
+        <!-- Skill Gap Result -->
+        <div class="section" id="skillGapResult" style="display:none;">
+            <h2>Skills to Learn</h2>
+            <div id="skillsToLearn"></div>
+        </div>
+
+        <button onclick="redirectToFinalAssessment()">Proceed to Final Assessment</button>
+    </div>
+
+<script>
+/* ------------------------------------------------------------------ */
+/* 1. Read and normalize parameters                                   */
+/* ------------------------------------------------------------------ */
+const urlParams = new URLSearchParams(window.location.search);
+let jobRole  = urlParams.get('jobRole');
+const company = urlParams.get('company');
+
+/* Normalize: trim → lower‑case → replace spaces with underscores */
+if (jobRole) {
+  jobRole = jobRole.trim().toLowerCase().replace(/\s+/g, '_');
+}
+
+/* Display company name (or placeholder) */
+document.getElementById('companyName').innerText = company ?? 'Unknown Company';
+
+/* ------------------------------------------------------------------ */
+/* 2. Skills data (unchanged)                                         */
+/* ------------------------------------------------------------------ */
+const skillsData = {
+    ai_ml_engineer: [
+        { skill:"Python Programming",level:"Basic",timeToLearn:"1 month",
+          freeResources:["https://www.learnpython.org/","https://www.codecademy.com/learn/learn-python-3"],
+          paidResources:["https://www.udemy.com/course/python-for-data-science-and-machine-learning-bootcamp/"]},
+        { skill:"Machine Learning Basics",level:"Intermediate",timeToLearn:"2 months",
+          freeResources:["https://www.coursera.org/learn/machine-learning"],
+          paidResources:["https://www.udemy.com/course/machinelearning/"]},
+        { skill:"Deep Learning (TensorFlow/PyTorch)",level:"Advanced",timeToLearn:"3 months",
+          freeResources:["https://www.tensorflow.org/tutorials","https://www.coursera.org/specializations/deep-learning"],
+          paidResources:["https://www.udemy.com/course/deeplearning/"]},
+        { skill:"Mathematics for ML (Linear Algebra, Calculus)",level:"Intermediate",timeToLearn:"1.5 months",
+          freeResources:["https://www.khanacademy.org/math/linear-algebra"],
+          paidResources:["https://www.udemy.com/course/linear-algebra-theory-and-implementation/"]},
+        { skill:"Natural Language Processing (NLP)",level:"Advanced",timeToLearn:"2 months",
+          freeResources:["https://www.coursera.org/specializations/natural-language-processing"],
+          paidResources:["https://www.udemy.com/course/natural-language-processing-with-python/"]},
+        { skill:"Computer Vision",level:"Advanced",timeToLearn:"2 months",
+          freeResources:["https://www.coursera.org/specializations/computer-vision"],
+          paidResources:["https://www.udemy.com/course/computer-vision-with-python/"]},
+        { skill:"Cloud Computing (AWS/GCP/Azure)",level:"Intermediate",timeToLearn:"2 months",
+          freeResources:["https://aws.amazon.com/training/","https://cloud.google.com/training"],
+          paidResources:["https://www.udemy.com/course/aws-certified-solutions-architect-associate/"]}
+    ],
+    ai_research_scientist: [
+        { skill:"Advanced Mathematics (Linear Algebra, Calculus)",level:"Intermediate",timeToLearn:"2 months",
+          freeResources:["https://www.khanacademy.org/math/linear-algebra"],
+          paidResources:["https://www.udemy.com/course/linear-algebra-theory-and-implementation/"]},
+        { skill:"Reinforcement Learning",level:"Advanced",timeToLearn:"3 months",
+          freeResources:["https://www.coursera.org/specializations/reinforcement-learning"],
+          paidResources:["https://www.udemy.com/course/reinforcement-learning/"]},
+        { skill:"Generative Models (GANs, VAEs)",level:"Advanced",timeToLearn:"2 months",
+          freeResources:["https://www.coursera.org/learn/generative-adversarial-networks-gans"],
+          paidResources:["https://www.udemy.com/course/generative-adversarial-networks-gans/"]},
+        { skill:"Research Methodology",level:"Intermediate",timeToLearn:"1.5 months",
+          freeResources:["https://www.coursera.org/learn/research-methods"],
+          paidResources:["https://www.udemy.com/course/research-methods/"]},
+        { skill:"Scientific Writing and Publishing",level:"Intermediate",timeToLearn:"1 month",
+          freeResources:["https://www.coursera.org/learn/sciwrite"],
+          paidResources:["https://www.udemy.com/course/scientific-writing/"]},
+        { skill:"High-Performance Computing",level:"Advanced",timeToLearn:"2 months",
+          freeResources:["https://www.coursera.org/learn/high-performance-computing"],
+          paidResources:["https://www.udemy.com/course/high-performance-computing/"]},
+        { skill:"Ethics in AI Research",level:"Intermediate",timeToLearn:"1 month",
+          freeResources:["https://www.coursera.org/learn/ai-ethics"],
+          paidResources:["https://www.udemy.com/course/ai-ethics/"]}
+    ],
+    data_scientist: [
+        { skill:"Python Programming",level:"Basic",timeToLearn:"1 month",
+          freeResources:["https://www.learnpython.org/","https://www.codecademy.com/learn/learn-python-3"],
+          paidResources:["https://www.udemy.com/course/python-for-data-science-and-machine-learning-bootcamp/"]},
+        { skill:"Data Analysis (Pandas/Numpy)",level:"Intermediate",timeToLearn:"1.5 months",
+          freeResources:["https://www.datacamp.com/courses/pandas-foundations"],
+          paidResources:["https://www.udemy.com/course/data-analysis-with-pandas/"]},
+        { skill:"SQL and Database Management",level:"Intermediate",timeToLearn:"1.5 months",
+          freeResources:["https://www.w3schools.com/sql/","https://www.khanacademy.org/computing/computer-programming/sql"],
+          paidResources:["https://www.udemy.com/course/the-complete-sql-bootcamp/"]},
+        { skill:"Machine Learning Basics",level:"Intermediate",timeToLearn:"2 months",
+          freeResources:["https://www.coursera.org/learn/machine-learning"],
+          paidResources:["https://www.udemy.com/course/machinelearning/"]},
+        { skill:"Data Visualization (Matplotlib/Seaborn)",level:"Intermediate",timeToLearn:"1.5 months",
+          freeResources:["https://www.datacamp.com/courses/data-visualization-with-python"],
+          paidResources:["https://www.udemy.com/course/data-visualization-with-python-and-matplotlib/"]},
+        { skill:"Big Data Tools (Hadoop/Spark)",level:"Advanced",timeToLearn:"2 months",
+          freeResources:["https://www.coursera.org/learn/big-data-introduction"],
+          paidResources:["https://www.udemy.com/course/big-data-and-hadoop/"]},
+        { skill:"Cloud Computing (AWS/GCP/Azure)",level:"Intermediate",timeToLearn:"2 months",
+          freeResources:["https://aws.amazon.com/training/","https://cloud.google.com/training"],
+          paidResources:["https://www.udemy.com/course/aws-certified-solutions-architect-associate/"]}
+    ],
+    ai_ethics_specialist: [
+        { skill:"Ethics in AI",level:"Intermediate",timeToLearn:"1 month",
+          freeResources:["https://www.coursera.org/learn/ai-ethics"],
+          paidResources:["https://www.udemy.com/course/ai-ethics/"]},
+        { skill:"Bias and Fairness in AI",level:"Intermediate",timeToLearn:"1.5 months",
+          freeResources:["https://www.coursera.org/learn/ai-fairness"],
+          paidResources:["https://www.udemy.com/course/ai-fairness/"]},
+        { skill:"AI Policy and Regulation",level:"Intermediate",timeToLearn:"1.5 months",
+          freeResources:["https://www.coursera.org/learn/ai-policy"],
+          paidResources:["https://www.udemy.com/course/ai-policy/"]},
+        { skill:"Social Impact of AI",level:"Intermediate",timeToLearn:"1 month",
+          freeResources:["https://www.coursera.org/learn/ai-social-impact"],
+          paidResources:["https://www.udemy.com/course/ai-social-impact/"]},
+        { skill:"Explainable AI (XAI)",level:"Advanced",timeToLearn:"2 months",
+          freeResources:["https://www.coursera.org/learn/explainable-ai"],
+          paidResources:["https://www.udemy.com/course/explainable-ai/"]},
+        { skill:"Privacy and Security in AI",level:"Intermediate",timeToLearn:"1.5 months",
+          freeResources:["https://www.coursera.org/learn/ai-privacy"],
+          paidResources:["https://www.udemy.com/course/ai-privacy/"]},
+        { skill:"Stakeholder Engagement",level:"Basic",timeToLearn:"1 month",
+          freeResources:["https://www.coursera.org/learn/stakeholder-engagement"],
+          paidResources:["https://www.udemy.com/course/stakeholder-engagement/"]}
+    ],
+    robotics_engineer: [
+        { skill:"C++ Programming",level:"Basic",timeToLearn:"1 month",
+          freeResources:["https://www.learncpp.com/","https://www.codecademy.com/learn/learn-c-plus-plus"],
+          paidResources:["https://www.udemy.com/course/beginning-c-plus-plus-programming/"]},
+        { skill:"Robotics Operating System (ROS)",level:"Intermediate",timeToLearn:"2 months",
+          freeResources:["https://www.ros.org/"],
+          paidResources:["https://www.udemy.com/course/ros-for-beginners/"]},
+        { skill:"Control Systems",level:"Intermediate",timeToLearn:"2 months",
+          freeResources:["https://www.coursera.org/learn/control-systems"],
+          paidResources:["https://www.udemy.com/course/control-systems/"]},
+        { skill:"Computer Vision for Robotics",level:"Advanced",timeToLearn:"2 months",
+          freeResources:["https://www.coursera.org/specializations/computer-vision"],
+          paidResources:["https://www.udemy.com/course/computer-vision-with-python/"]},
+        { skill:"Sensor Fusion",level:"Advanced",timeToLearn:"2 months",
+          freeResources:["https://www.coursera.org/learn/sensor-fusion"],
+          paidResources:["https://www.udemy.com/course/sensor-fusion/"]},
+        { skill:"Path Planning and Navigation",level:"Intermediate",timeToLearn:"1.5 months",
+          freeResources:["https://www.coursera.org/learn/path-planning"],
+          paidResources:["https://www.udemy.com/course/path-planning/"]},
+        { skill:"Embedded Systems",level:"Intermediate",timeToLearn:"2 months",
+          freeResources:["https://www.coursera.org/learn/embedded-systems"],
+          paidResources:["https://www.udemy.com/course/embedded-systems/"]}
+    ]
+};
+
+/* ------------------------------------------------------------------ */
+/* 3. Populate the skills list or show error                          */
+/* ------------------------------------------------------------------ */
+const skillsList = document.getElementById('skillsList');
+
+if (jobRole && skillsData[jobRole]) {
+    skillsData[jobRole].forEach(skill => {
+        skillsList.innerHTML += `
+            <div class="skill-item">
+                <input type="checkbox" id="${skill.skill}" name="skills" value="${skill.skill}">
+                <label for="${skill.skill}">${skill.skill} (${skill.level})</label>
+            </div>`;
+    });
+} else {
+    skillsList.innerHTML =
+        `<p style="color:red;font-weight:bold;">
+          Invalid or missing job role. Please go back and select a valid job.
+        </p>`;
+}
+
+/* ------------------------------------------------------------------ */
+/* 4. Calculate gap                                                   */
+/* ------------------------------------------------------------------ */
+function calculateSkillGap() {
+    if (!jobRole || !skillsData[jobRole]) return;
+
+    const selected = Array.from(
+        document.querySelectorAll('input[name="skills"]:checked')
+    ).map(el => el.value);
+
+    const missing = skillsData[jobRole].filter(s => !selected.includes(s.skill));
+
+    const out = missing.map(s => `
+        <div class="skill-item">
+            <h3>${s.skill} (${s.level})</h3>
+            <p><strong>Time to Learn:</strong> ${s.timeToLearn}</p>
+            <div class="resources">
+                <div><strong>Free Resources:</strong><ul>
+                    ${s.freeResources.map(l => `<li><a href="${l}" target="_blank">${l}</a></li>`).join('')}
+                </ul></div>
+                <div><strong>Paid Resources:</strong><ul>
+                    ${s.paidResources.map(l => `<li><a href="${l}" target="_blank">${l}</a></li>`).join('')}
+                </ul></div>
+            </div>
+        </div>`).join('');
+
+    document.getElementById('skillsToLearn').innerHTML = out;
+    document.getElementById('skillGapResult').style.display = 'block';
+}
+
+/* ------------------------------------------------------------------ */
+/* 5. Redirect to final assessment                                    */
+/* ------------------------------------------------------------------ */
+function redirectToFinalAssessment() {
+    const encodedRole = encodeURIComponent(jobRole ?? '');
+    const encodedComp = encodeURIComponent(company ?? '');
+    window.location.href = `/page5.ejs?jobRole=${encodedRole}&company=${encodedComp}`;
+}
+</script>
 </body>
 </html>
