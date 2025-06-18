@@ -115,7 +115,11 @@ app.get('/social-worker',(req,res)=>{
 app.get('/software-engineer',(req,res)=>{
     res.render('software-engineer');
 })
-
+// backend (Node.js + Express)
+app.get('/jobRoleSelection', (req, res) => {
+    const branch = req.query.branch;
+    res.render('jobRoleSelection', { branch }); // renders jobRoleSelection.ejs
+});
 app.post('/selectProfilePic', (req, res) => {
     const { profilePhoto } = req.body; 
     
