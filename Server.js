@@ -138,6 +138,7 @@ app.get('/companiesHiring', (req, res) => {
     res.render('companiesHiring', { jobRole }); // Render the EJS
 });
 
+
 app.post('/register', async (req, res) => {
     try {
         const { username, email, password } = req.body;
