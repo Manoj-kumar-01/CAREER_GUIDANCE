@@ -92,7 +92,7 @@
         // Display company name
         document.getElementById('companyName').innerText = company;
 
-        // Skills data (from basic to advanced)
+        // Skills data
         const skillsData = {
             ai_ml_engineer: [
                 { skill: "Python Programming", level: "Basic", timeToLearn: "1 month", freeResources: ["https://www.learnpython.org/", "https://www.codecademy.com/learn/learn-python-3"], paidResources: ["https://www.udemy.com/course/python-for-data-science-and-machine-learning-bootcamp/"] },
@@ -141,23 +141,26 @@
             ]
         };
 
-        // Display skills list
         const skillsList = document.getElementById('skillsList');
-        skillsData[jobRole].forEach(skill => {
-            skillsList.innerHTML += `
-                <div class="skill-item">
-                    <input type="checkbox" id="${skill.skill}" name="skills" value="${skill.skill}">
-                    <label for="${skill.skill}">${skill.skill} (${skill.level})</label>
-                </div>
-            `;
-        });
 
-        // Calculate Skill Gap
+        // ✅ Fix: Check jobRole is valid before using it
+        if (jobRole && skillsData[jobRole]) {
+            skillsData[jobRole].forEach(skill => {
+                skillsList.innerHTML += `
+                    <div class="skill-item">
+                        <input type="checkbox" id="${skill.skill}" name="skills" value="${skill.skill}">
+                        <label for="${skill.skill}">${skill.skill} (${skill.level})</label>
+                    </div>
+                `;
+            });
+        } else {
+            skillsList.innerHTML = `<p style="color:red;">Invalid or missing job role. Please go back and select a valid job.</p>`;
+        }
+
         function calculateSkillGap() {
             const selectedSkills = Array.from(document.querySelectorAll('input[name="skills"]:checked')).map(skill => skill.value);
             const skillsToLearn = skillsData[jobRole].filter(skill => !selectedSkills.includes(skill.skill));
 
-            // Display skills to learn
             const skillsToLearnDiv = document.getElementById('skillsToLearn');
             skillsToLearnDiv.innerHTML = skillsToLearn.map(skill => `
                 <div class="skill-item">
@@ -183,13 +186,11 @@
             document.getElementById('skillGapResult').style.display = 'block';
         }
 
-        
         function redirectToFinalAssessment() {
             const encodedRole = encodeURIComponent(jobRole);
             const encodedCompany = encodeURIComponent(company);
             window.location.href = `/page5?jobRole=${encodedRole}&company=${encodedCompany}`;
         }
-
     </script>
 </body>
 </html>
