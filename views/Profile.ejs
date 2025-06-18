@@ -349,7 +349,7 @@
     </div>
 
     <script>
-        // Fetch user profile data from the server
+        
         async function fetchUserProfile() {
             try {
                 const response = await fetch('/getUserProfile', {
@@ -491,28 +491,28 @@
         // Fetch profile data on page load
         fetchUserProfile();
 
-        let selectedProfilePic = ''; // Store the selected profile picture
-        let previouslySelectedImage = null; // Track the previously selected image
+        let selectedProfilePic = ''; 
+        let previouslySelectedImage = null; 
 
         function selectProfilePic(picName, event) {
-            // Remove the 'selected' class from the previously selected image
+            
             if (previouslySelectedImage) {
                 previouslySelectedImage.classList.remove('selected');
             }
 
-            // Add the 'selected' class to the newly selected image
+            
             const selectedImage = event.target;
             selectedImage.classList.add('selected');
             previouslySelectedImage = selectedImage;
 
-            // Update the selected profile photo path
+            
             selectedProfilePic = `/images/${picName}`;
             console.log("Selected Profile Picture:", selectedProfilePic); // Debugging
 
-            // Update the profile photo preview
+            
             document.getElementById('profilePhoto').src = selectedProfilePic;
 
-            // Send the selected profile photo to the backend
+            
             fetch('/updateProfile', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
