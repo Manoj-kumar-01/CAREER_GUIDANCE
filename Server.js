@@ -144,7 +144,10 @@ app.get('/skillGapAnalysis', (req, res) => {
     const { jobRole, company } = req.query;
     res.render('skillGapAnalysis', { jobRole, company });
 });
-
+app.get('/page5', (req, res) => {
+    const { jobRole, company } = req.query;
+    res.render('page5', { jobRole, company });
+});
 
 app.post('/register', async (req, res) => {
     try {
