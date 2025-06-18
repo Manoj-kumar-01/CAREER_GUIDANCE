@@ -137,6 +137,10 @@ app.get('/companiesHiring', (req, res) => {
     const jobRole = req.query.jobRole; // Access query param
     res.render('companiesHiring', { jobRole }); // Render the EJS
 });
+app.get('/jobDetails', (req, res) => {
+    const { jobRole, company } = req.query;
+    res.render('jobDetails', { jobRole, company });
+});
 
 
 app.post('/register', async (req, res) => {
