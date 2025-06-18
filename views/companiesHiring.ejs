@@ -399,7 +399,7 @@
 
         // Display companies with complexity percentage
         const companiesList = document.getElementById('companiesList');
-        function displayCompanies(companiesArray) {
+        function displayCompanies(companiesArray,jobRole) {
     companiesList.innerHTML = companiesArray.map(company => `
         <div class="company">
             <div class="company-name">
@@ -434,7 +434,7 @@
 
 
         // Initial display of companies
-        displayCompanies(companies[jobRole]);
+        displayCompanies(companies[jobRole],jobRole);
 
         // Reveal complexity details
         function revealComplexity(event) {
