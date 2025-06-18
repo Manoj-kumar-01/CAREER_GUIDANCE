@@ -140,6 +140,10 @@ app.get('/jobRoleSelection', (req, res) => {
     const branch = req.query.branch;
     res.render('jobRoleSelection', { branch });
 });
+app.get('/skillGapAnalysis', (req, res) => {
+    const { jobRole, company } = req.query;
+    res.render('skillGapAnalysis', { jobRole, company });
+});
 
 
 app.post('/register', async (req, res) => {
