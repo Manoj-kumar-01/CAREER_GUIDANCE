@@ -132,14 +132,13 @@ app.post('/selectProfilePic', (req, res) => {
     req.session.profilePhoto = profilePhoto;
     res.json({ success: true, profilePhoto });
 });
-// Example: For companiesHiring.ejs
-app.get('/companiesHiring', (req, res) => {
-    const jobRole = req.query.jobRole; // Access query param
-    res.render('companiesHiring', { jobRole }); // Render the EJS
-});
 app.get('/jobDetails', (req, res) => {
     const { jobRole, company } = req.query;
     res.render('jobDetails', { jobRole, company });
+});
+app.get('/jobRoleSelection', (req, res) => {
+    const branch = req.query.branch;
+    res.render('jobRoleSelection', { branch });
 });
 
 
