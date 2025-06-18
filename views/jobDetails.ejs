@@ -1381,9 +1381,12 @@
         }
 
         // Redirect to Page 4 (Skill Gap Analysis)
-        function redirectToSkillGap() {
-            window.location.href = `skillGapAnalysis.ejs?jobRole=${jobRole}&company=${company}`;
-        }
+       function redirectToSkillGap(jobRole, company) {
+    const encodedRole = encodeURIComponent(jobRole);
+    const encodedCompany = encodeURIComponent(company);
+
+    window.location.href = `/views/skillGapAnalysis.ejs?jobRole=${encodedRole}&company=${encodedCompany}`;
+}
     </script>
 </body>
 </html>
