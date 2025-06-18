@@ -136,7 +136,7 @@
     <script>
         
         function selectJobRole(jobRole) {
-            window.location.href = `companiesHiring.ejs?jobRole=${jobRole}`;
+            window.location.href = `/views/companiesHiring.ejs?jobRole=${encodeURIComponent(jobRole)}`;
         }
         
         function filterJobRoles() {
